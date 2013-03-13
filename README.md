@@ -1,1 +1,1 @@
-You <BLINK> and the world changes.
+You &lt;BLINK&gt; and the world changes.
