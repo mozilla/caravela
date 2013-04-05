@@ -1,1 +1,3 @@
 *.py[c|o]
+keys/
+notebook/
