@@ -1,0 +1,4 @@
+beautifulsoup4
+git+https://github.com/trivio/codd.git
+nose
+boto

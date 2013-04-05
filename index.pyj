@@ -1,0 +1,21 @@
+"""
+Trvi.io job used to extract features from the common craw corpus
+"""
+from bs4 import BeautifulSoup
+from features import extractor
+
+common_crawl_url =   's3://aws-publicdatasets/common-crawl/parse-output/segment'
+
+def beautiful_soup(stream, size, url, params):
+  for doc in stream:
+    if doc['content-type'] == 'text/html':
+      doc['html'] = BeautifulSoup(doc['payload'])
+    yield doc
+
+cc_features = load(common_crawl_url).map_reader(
+  beautiful_soup
+).map(
+  extractor
+).store(
+  'cc_features'
+).schedule('once')
