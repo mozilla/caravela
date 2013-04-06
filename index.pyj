@@ -10,6 +10,7 @@ cc_features.param('maxinput', 1)
 @cc_features.map_reader
 def beautiful_soup(stream, size, url, params):
   from bs4 import BeautifulSoup
+  print "map reader my my"
   for doc in stream:
     print doc
     if doc['content-type'] == 'text/html':
