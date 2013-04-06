@@ -2,9 +2,10 @@
 Trvi.io job used to extract features from the common craw corpus
 """
 
-common_crawl_url =   's3://bogus-key:bogus-secrect@aws-publicdatasets/common-crawl/parse-output/segment/'
+common_crawl_url =   's3://AKIAJ6PF5PWHFME4GA5A:hoHLkSwHztDHFEJr0z3iMrvQndgLfrDraxK3Oru7@aws-publicdatasets/common-crawl/parse-output/segment/'
 
 cc_features = rule(common_crawl_url,'cc_features')
+cc_features.param('maxinput', 1)
 
 @cc_features.map_reader
 def beautiful_soup(stream, size, url, params):
