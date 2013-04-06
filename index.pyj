@@ -2,7 +2,7 @@
 Trvi.io job used to extract features from the common craw corpus
 """
 
-common_crawl_url =   's3://aws-publicdatasets/common-crawl/parse-output/segment'
+common_crawl_url =   's3://bogus-key:bogus-secrect@aws-publicdatasets/common-crawl/parse-output/segment/'
 
 cc_features = rule(common_crawl_url,'cc_features')
 
