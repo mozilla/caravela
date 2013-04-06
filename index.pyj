@@ -22,4 +22,6 @@ def map(doc, params):
   for key in doc.keys():
     yield key, 1
 
+@cc_features.reduce(iter, params):
+  return iter
 
