@@ -26,5 +26,6 @@ def map(doc, params):
 
 @cc_features.reduce
 def reduce(iter, params):
-  return iter
+  for k, v in iter:
+    yield k, v
 
