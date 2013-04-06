@@ -1,4 +1,3 @@
-from itertools
 import codd
 
 def size(doc):
