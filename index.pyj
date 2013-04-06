@@ -11,6 +11,7 @@ cc_features.param('maxinput', 1)
 def beautiful_soup(stream, size, url, params):
   from bs4 import BeautifulSoup
   for doc in stream:
+    print doc
     if doc['content-type'] == 'text/html':
       doc['html'] = BeautifulSoup(doc['payload'])
     yield doc
