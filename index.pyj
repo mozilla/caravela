@@ -7,15 +7,15 @@ common_crawl_url =   's3://AKIAJ6PF5PWHFME4GA5A:hoHLkSwHztDHFEJr0z3iMrvQndgLfrDr
 cc_features = rule(common_crawl_url,'cc_features')
 cc_features.param('maxinput', 1)
 
-@cc_features.map_reader
-def beautiful_soup(stream, size, url, params):
-  from bs4 import BeautifulSoup
-  print "map reader my my"
-  for doc in stream:
-    print doc
-    if doc['content-type'] == 'text/html':
-      doc['html'] = BeautifulSoup(doc['payload'])
-    yield doc
+#@cc_features.map_reader
+#def beautiful_soup(stream, size, url, params):
+#  from bs4 import BeautifulSoup
+#  print "map reader my my"
+#  for doc in stream:
+#    print doc
+#    if doc['content-type'] == 'text/html':
+#      doc['html'] = BeautifulSoup(doc['payload'])
+#    yield doc
 
 @cc_features.map
 def map(doc, params):
