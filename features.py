@@ -17,12 +17,12 @@ def links(doc):
   for element in doc.find_all('a'):
     yield 'links', element.get('href')
 
-features = codd.parallel(
-  size,
-  content_type,
-  scripts,
-  links
-)
+#features = codd.parallel(
+#  size,
+#  content_type,
+#  scripts,
+#  links
+#)
 
 def docid(params):
   doc_count = params['doc_counter'] = params.get('doc_count',0)
