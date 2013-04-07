@@ -19,7 +19,7 @@ def beautiful_soup(stream, size, url, params):
         #doc['html'] = BeautifulSoup(doc['payload'])
       except Exception, e:
         doc['parse_exception'] = e
-  yield doc
+    yield doc
 
 @cc_features.map
 def map(doc, params):
