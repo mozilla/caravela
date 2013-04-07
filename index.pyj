@@ -8,7 +8,7 @@ common_crawl_url = 's3://AKIAJ6PF5PWHFME4GA5A:hoHLkSwHztDHFEJr0z3iMrvQndgLfrDrax
 cc_features = rule(common_crawl_url,'cc_features')
 cc_features.param('maxinput', 1)
 
-#@cc_features.map_reader
+@cc_features.map_reader
 def beautiful_soup(stream, size, url, params):
 
   from bs4 import BeautifulSoup
@@ -16,7 +16,7 @@ def beautiful_soup(stream, size, url, params):
     if doc['content_type'] == 'text/html':
       try:
         doc['payload'] = doc['payload'].decode('utf-8','replace')
-        doc['html'] = BeautifulSoup(doc['payload'])
+        #doc['html'] = BeautifulSoup(doc['payload'])
       except Exception, e:
         doc['parse_exception'] = e
   yield doc
