@@ -11,12 +11,17 @@ cc_features.param('maxinput', 1)
 @cc_features.map_reader
 def beautiful_soup(stream, size, url, params):
   print "soups on"
-  from bs4 import BeautifulSoup
+  from bs4 import BeautifulSoup, SoupStrainer
+
+  def links_and_scripts(name, attrs):
+    return name in ('a', 'script')
+
+  parse_only = SoupStrainer(links_and_scripts)
   for doc in stream:
     if doc['content_type'] == 'text/html':
       try:
         doc['payload'] = doc['payload'].decode('utf-8','replace')
-        doc['html'] = BeautifulSoup(doc['payload'])
+        doc['html'] = BeautifulSoup(doc['payload'], parseOnlyThese=parse_only)
       except Exception, e:
         doc['parse_exception'] = e
     yield doc
