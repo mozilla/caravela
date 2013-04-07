@@ -17,18 +17,18 @@ def links(doc):
   for element in doc.find_all('a'):
     yield 'links', element.get('href')
 
-#features = codd.parallel(
-#  size,
-#  content_type,
-#  scripts,
-#  links
-#)
+features = codd.parallel(
+  size,
+  content_type,
+  scripts,
+  links
+)
 
 def docid(params):
   doc_count = params['doc_counter'] = params.get('doc_count',0)
   return (doc_count * params['worker_count']) + params['worker_id']
 
-def extrator(doc, params):
+def extractor(doc, params):
   doc_id = docid(params)
   
   yield "doc_id:{}".format(doc_id), doc['url']

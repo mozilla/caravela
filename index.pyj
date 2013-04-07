@@ -24,9 +24,7 @@ def beautiful_soup(stream, size, url, params):
 @cc_features.map
 def map(doc, params):
   from features import extractor
-  return extractor(doc)
-  #for key in doc.keys():
-  #  yield key, 1
+  return extractor(doc, params)
 
 @cc_features.reduce
 def reduce(iter, params):
