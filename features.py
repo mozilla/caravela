@@ -1,5 +1,5 @@
 import codd
-
+print codd.__file__
 def size(doc):
   """Returns size:xxx"""
   yield 'size', len(doc.payload)
