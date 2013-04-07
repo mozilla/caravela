@@ -13,7 +13,7 @@ def beautiful_soup(stream, size, url, params):
   from bs4 import BeautifulSoup
   for doc in stream:
   if doc['content_type'] == 'text/html':
-    try
+    try:
       doc['html'] = BeautifulSoup(doc['payload'])
     except Exception, e:
       print e
