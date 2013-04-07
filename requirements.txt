@@ -1,4 +1,5 @@
 beautifulsoup4
-git+https://github.com/trivio/codd.git
+#git+https://github.com/trivio/codd.git#egg=codd
+codd >= 0.1.3
 nose
 boto
