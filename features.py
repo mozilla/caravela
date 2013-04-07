@@ -2,7 +2,7 @@ import codd
 
 def size(doc):
   """Returns size:xxx"""
-  yield 'size', len(doc.text)
+  yield 'size', len(doc.payload)
 
 
 def content_type(doc):

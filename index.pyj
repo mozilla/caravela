@@ -18,7 +18,7 @@ def beautiful_soup(stream, size, url, params):
         doc['payload'] = doc['payload'].decode('utf-8','replace')
         doc['html'] = BeautifulSoup(doc['payload'])
       except Exception, e:
-        print "Error parsing: {}".format(doc['url'])
+        doc['parse_exception'] = e
   yield doc
 
 @cc_features.map
@@ -30,6 +30,6 @@ def map(doc, params):
 
 @cc_features.reduce
 def reduce(iter, params):
-  return  ( (key,1) for key in set((k for k,v in iter)))
+  #return  ( (key,1) for key in set((k for k,v in iter)))
 
-  #return iter
+  return iter
