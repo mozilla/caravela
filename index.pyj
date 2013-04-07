@@ -21,7 +21,7 @@ def beautiful_soup(stream, size, url, params):
     if doc['content_type'] == 'text/html':
       try:
         doc['payload'] = doc['payload'].decode('utf-8','replace')
-        doc['html'] = BeautifulSoup(doc['payload'], parseOnlyThese=parse_only)
+        doc['html'] = BeautifulSoup(doc['payload'], parse_only=parse_only)
       except Exception, e:
         doc['parse_exception'] = e
     yield doc
