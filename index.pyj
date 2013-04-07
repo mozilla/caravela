@@ -8,7 +8,7 @@ common_crawl_url = 's3://AKIAJ6PF5PWHFME4GA5A:hoHLkSwHztDHFEJr0z3iMrvQndgLfrDrax
 cc_features = rule(common_crawl_url,'cc_features')
 cc_features.param('maxinput', 1)
 
-@cc_features.map_reader
+#@cc_features.map_reader
 def beautiful_soup(stream, size, url, params):
 
   from bs4 import BeautifulSoup
@@ -23,8 +23,9 @@ def beautiful_soup(stream, size, url, params):
 
 @cc_features.map
 def map(doc, params):
-  from features import extractor
-  return extractor(doc, params)
+  yield 'doc', 1
+  #from features import extractor
+  #return extractor(doc, params)
 
 @cc_features.reduce
 def reduce(iter, params):
