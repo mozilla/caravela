@@ -12,11 +12,11 @@ cc_features.param('maxinput', 1)
 def beautiful_soup(stream, size, url, params):
   from bs4 import BeautifulSoup
   for doc in stream:
-  if doc['content_type'] == 'text/html':
-    try:
-      doc['html'] = BeautifulSoup(doc['payload'])
-    except Exception, e:
-      print e
+    if doc['content_type'] == 'text/html':
+      try:
+        doc['html'] = BeautifulSoup(doc['payload'])
+      except Exception, e:
+        print e
   yield doc
 
 @cc_features.map
