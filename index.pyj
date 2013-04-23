@@ -57,9 +57,13 @@ def index(doc, params):
 
 @cc_features.reduce
 def reduce(iter, params):
-  from features import tags
-  for tag in tags:
-    yield "tag", tag
+  from features import names
+
+  # output top level feature items, this will
+  # let us navigate to the subitems
+  # -> (('feature','script'),('feature','link')...)
+  for name  in names:
+    yield "feature", name
        
   for k,v in iter:
     # ('link:http:/foo.com', 2) -> ('link:http:/foo.com', '2')

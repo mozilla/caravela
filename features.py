@@ -1,5 +1,4 @@
 import codd
-print codd.__file__
 from urlparse import urlparse
 
 def size(doc):
@@ -37,7 +36,9 @@ methods = [
   link
 ]
 
-feature_names = [m.__name__ for m in methods]
+names = [m.__name__ for m in methods]
+names.append('doc_id')
+
 features      = codd.parallel(*methods)
 
 def docid(params):
