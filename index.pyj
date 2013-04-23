@@ -2,36 +2,70 @@
 Trvi.io job used to extract features from the common craw corpus
 """
 
-#common_crawl_url =   's3://AKIAJ6PF5PWHFME4GA5A:hoHLkSwHztDHFEJr0z3iMrvQndgLfrDraxK3Oru7@aws-publicdatasets/common-crawl/parse-output/segment/'
-
 common_crawl_url = 's3://AKIAJ6PF5PWHFME4GA5A:hoHLkSwHztDHFEJr0z3iMrvQndgLfrDraxK3Oru7@aws-publicdatasets/common-crawl/crawl-002/'
 cc_features = rule(common_crawl_url,'cc_features')
 cc_features.param('maxinput', 1)
+cc_features.param('unique_items', True)
+
+from disco.worker.classic.func import discodb_stream
+#
+cc_features.reduce_output_stream = discodb_stream
+#cc_features.sort = True
 
 @cc_features.map_reader
 def beautiful_soup(stream, size, url, params):
   print "soups on"
   from bs4 import BeautifulSoup, SoupStrainer
+  import time
+
+  # bs4 uses the warnings module which writes to stderr.
+  # this breaks disco which uses stderr for communicating
+  # to it's worker process.
+
+  import warnings, sys
+ 
+  def customwarn(message, category, filename, lineno, file=None, line=None):
+    sys.stdout.write(warnings.formatwarning(message, category, filename, lineno))
+  warnings.showwarning = customwarn
 
   def links_and_scripts(name, attrs):
     return name in ('a', 'script')
 
   parse_only = SoupStrainer(links_and_scripts)
+  start = time.time()
+  count = 0
   for doc in stream:
+    count += 1
+    #if count > 150:
+    #  return
+    
+    if time.time() - start > 1:
+      print "docs {}".format(count)
+      start = time.time()
+
     if doc['content_type'] == 'text/html':
       try:
-        doc['payload'] = doc['payload'].decode('utf-8','replace')
         doc['html'] = BeautifulSoup(doc['payload'], parse_only=parse_only)
       except Exception, e:
         doc['parse_exception'] = e
     yield doc
 
 @cc_features.map
-def map(doc, params):
-  yield 'doc', 1
-  #from features import extractor
-  #return extractor(doc, params)
+def index(doc, params):
+  from features import extractor
+  return extractor(doc, params)
 
 @cc_features.reduce
 def reduce(iter, params):
-  return iter
+  from features import tags
+  for tag in tags:
+    yield "tag", tag
+       
+  for k,v in iter:
+    # ('link:http:/foo.com', 2) -> ('link:http:/foo.com', '2')
+    yield k, str(v)
+    p = k.split(':',1)
+    if len(p) == 2:
+      # 'link:http:/foo.com' -> ('link', 'link:http:/foo.com')
+      yield p[0], k
+ 
