@@ -59,27 +59,33 @@ def sort(iter, col, dir="ASC"):
 def sorted_query(db, q_str, col=1):
   return sort(query(db, q_str), col=col)
 
+def ensure_dir(path):
+  dirname = os.path.dirname(path)
+  if not os.path.exists(dirname):
+    os.makedirs(dirname)
+
+
 @app.before_first_request
 def open_db():
-  if len(sys.argv > 1):
-    fname = sys.arv[1]
+  if __name__ == "__main__" and len(sys.argv) > 1:
+    fname = sys.argv[1]
   else:
     # fetch some data from s3
-    conn = boto.s3_connectection(
+    conn = boto.connect_s3(
       os.environ['AWS_KEY'],
       os.environ['AWS_SECRET']
     )
     bucket = conn.get_bucket('com.mozillalabs.blink')
 
-    bucket = conn.bucket('blink')
-    item = bucket.list('data/').next()
+    item = iter(bucket.list('data/reduce:')).next()
     fname = os.path.join(
       os.environ['DATA_DB_PATH'],
       str(item.key)
     )
     if not os.path.exists(fname):
-      item.get_contents_to_path(fname)
-
+      ensure_dir(fname)
+      item.get_contents_to_filename(fname)
+    
   app.db = DiscoDB.load(open(fname))
 
 
@@ -106,4 +112,6 @@ def index():
   )
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(
+      debug=True
+    )
