@@ -1,8 +1,10 @@
+import os
 import sys
 from functools import partial
-from itertools import islice
+from itertools import islice, chain
 
 from discodb import DiscoDB
+import boto
 from flask import Flask, render_template, request, g
 
 
@@ -21,13 +23,20 @@ def query(db, q_str):
 def slice(items, size, dir, label="Other"):
   if dir == "ASC":
     i = iter(items)
-  else:
+  elif dir == "DESC":
     i = reversed(items)
+  else:
+    raise ValueError("dir must be ASC|DESC")
 
-  for item in islice(i, size):
-    yield item
-  yield label, sum(item[1] for item in i)
+  s     = islice(i, size)
+  other = label, sum(item[1] for item in i)
 
+  # note other is always last regardless of it's
+  # value... not sure if that's proper or not
+  if dir == "ASC":
+    return chain(s, (other,))
+  else:
+    return chain(reversed(s), (other,))
 
 def top(items, size=5):
   return slice(items, size, "DESC")
