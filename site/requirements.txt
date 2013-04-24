@@ -1,2 +1,3 @@
 Flask
 git+https://github.com/trivio/discodb.git
+boto
