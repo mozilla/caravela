@@ -18,6 +18,7 @@ Vagrant.configure("2") do |config|
     aws.keypair_name = "trivio deploy key"
     aws.security_groups = ["blink", "default"]
     aws.ami = "ami-7747d01e"
+    aws.instance_type = "m1.xlarge"
     override.ssh.username = "ubuntu"
     override.ssh.private_key_path = "keys/moz.rsa"
 
