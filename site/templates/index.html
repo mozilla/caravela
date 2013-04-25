@@ -87,7 +87,7 @@
             <table class="table table-condensed">
               {% for query, count in top(results) %}
               <tr>
-                <td>{{query.split(':')[1] if ":" in query else query}}</td>
+                <td>{{query}}</td>
                 <td class="number">{{count|commas}}</td>
               </tr>
               {% endfor %}

@@ -28,24 +28,19 @@ def slice(items, size, dir, label="Other"):
   else:
     raise ValueError("dir must be ASC|DESC")
 
-  s     = islice(i, size)
-  other = label, sum(item[1] for item in i)
+  for item in islice(i, size):
+    yield item
+  
+  other = sum(item[1] for item in i)
+  if other > 0:
+    yield label, other
 
-  # note other is always last regardless of it's
-  # value... not sure if that's proper or not
-  if dir == "ASC":
-    return chain(s, (other,))
-  else:
-    return chain(reversed(s), (other,))
 
 def top(items, size=5):
   return slice(items, size, "DESC")
 
 def bottom(items, size=5):
   return slice(items, size, "ASC")
-
-def value((k,count)):
-  return k.split(':',1)[1], count
 
 
 def sort(iter, col, dir="ASC"):
@@ -89,6 +84,9 @@ def open_db():
   app.db = DiscoDB.load(open(fname))
 
 
+@app.template_filter('value')
+def value(k):
+  return k.split(':',1)[-1]
 
 @app.template_filter('commas')
 def commas(val):
@@ -98,7 +96,7 @@ def commas(val):
 def index():
   q = request.args.get('q')
   if q:
-    results = [ value(item) for item in sorted_query(app.db, q)]
+    results =  sorted_query(app.db, q)
   else:
     results = []
 
