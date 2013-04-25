@@ -18,6 +18,7 @@ def beautiful_soup(stream, size, url, params):
   from bs4 import BeautifulSoup, SoupStrainer
   import time
 
+
   # bs4 uses the warnings module which writes to stderr.
   # this breaks disco which uses stderr for communicating
   # to it's worker process.
@@ -28,12 +29,9 @@ def beautiful_soup(stream, size, url, params):
     sys.stdout.write(warnings.formatwarning(message, category, filename, lineno))
   warnings.showwarning = customwarn
 
-  def links_and_scripts(name, attrs):
-    return name in ('a', 'script')
-
-  parse_only = SoupStrainer(links_and_scripts)
   start = time.time()
   count = 0
+  eo_headers = '\r\n\r\n'
   for doc in stream:
     count += 1
     #if count > 150:
@@ -43,9 +41,17 @@ def beautiful_soup(stream, size, url, params):
       print "docs {}".format(count)
       start = time.time()
 
+    eoh_pos = doc['payload'].find(eo_headers)
+    if eoh_pos > -1:
+      doc['headers'] = dict([
+        h.split(':',1)
+        for h in doc['payload'][:eoh_pos].split('\r\n')[1:]
+        if h
+      ])
+
     if doc['content_type'] == 'text/html':
       try:
-        doc['html'] = BeautifulSoup(doc['payload'], parse_only=parse_only)
+        doc['html'] = BeautifulSoup(doc['payload'])
       except Exception, e:
         doc['parse_exception'] = e
     yield doc
