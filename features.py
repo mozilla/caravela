@@ -3,16 +3,35 @@ from urlparse import urlparse
 
 def size(doc):
   """Returns size of the payload"""
-  yield 'size', len(doc['payload'])
+  kilobytes = len(doc['payload']) / 1024
+  yield 'size', "{} k".format(kilobytes)
 
 def host(doc):
   """Returns the host for the given doc"""
   yield "host", urlparse(doc['url']).hostname
 
+def header(doc):
+  for header, value in doc['headers'].items():
+    yield "header:{}".format(header), value
 
 def content_type(doc):
   """Returns contexnt_type:xxx"""
   yield 'content_type', doc.get('content_type')
+
+
+def attr(tag, attr, feature=None):
+  if feature is None:
+    feature = tag
+
+  def _(doc):
+    if doc.has_key('html'):
+      for element in doc['html'].find_all(tag):
+        value = element.get(attr)
+        if value:
+          yield feature, value
+  _.__name__ = feature
+  return _
+
 
 def script(doc):
   if doc.has_key('html'):
@@ -32,8 +51,10 @@ methods = [
   size,
   host,
   content_type,
-  script,
-  link
+  attr('script', 'src'),
+  attr('a', 'href', 'outbound'),
+  attr('link', 'href', 'css'),
+  header
 ]
 
 names = [m.__name__ for m in methods]
@@ -52,7 +73,8 @@ def docid(params):
 def extractor(doc, params):
   doc_id = docid(params)
   
-  yield "doc_id:{}".format(doc_id), doc['url']
+  # ->(doc_id, http://..)
+  yield "{}".format(doc_id), doc['url']
 
   for feature, value in features(doc):
     try:
