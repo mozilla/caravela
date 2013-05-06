@@ -40,7 +40,7 @@ def ensure_dir(path):
 def progress(fname, downloaded, size):
   logger.info("Downloaded %s of %s to %s", downloaded, size, fname)
 
-@periodic_task(run_every=timedelta(minutes=10))
+@periodic_task(run_every=timedelta(minutes=10), time_limit=530)
 def sync_dbs():
 
   # prevent multiple workers on the same box from
