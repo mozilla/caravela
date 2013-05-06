@@ -1,21 +1,16 @@
 package "build-essential"
 package "nginx"
-USER = "ubuntu"
-#user USER
 
-bash "Install python requirements" do
-  
-  code <<-EOH
-    pip install distribute==0.6.28
-    pip install gunicorn
-  EOH
 
-end
+USER = node[:app][:user]
+user USER
 
-template "/etc/blink.cfg" do
-  mode 00644
-  source "blink.cfg.erb"
-end
+
+
+#template "/etc/blink.cfg" do
+#  mode 00644
+#  source "blink.cfg.erb"
+#end
 
 
 # setup nginx
@@ -31,21 +26,16 @@ service "nginx" do
 end
 
 
-# configure gunicorn
+gem_package "foreman"
 
-directory "/var/log/blink" do
-  mode 00755
-  owner USER
+
+bash "create/update upstart scripts" do
+  cwd "#{node[:app][:home]}"
+  code "foreman export --app #{node[:app][:name]} --user #{USER} upstart /etc/init"
 end
 
 
-template "/etc/init/blink.conf" do
-  mode 00644
-  source "blink.upstart.erb"
-  notifies  :reload, "service[blink]"
-end
-
-service "blink" do
+service "#{node[:app][:name]}" do
   provider Chef::Provider::Service::Upstart
   enabled true
   running true
