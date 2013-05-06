@@ -2,22 +2,24 @@ import os
 import sys
 from functools import partial
 from itertools import islice, chain
+import json
 
 from discodb import DiscoDB
 import boto
-from flask import Flask, render_template, request, g
+from flask import (
+  Flask, 
+  render_template, 
+  make_response,
+  request,  
+  jsonify
+)
 
+from . import tasks
 
 app = Flask(__name__)
 
 
-def count(iter):
-  return sum(1 for _ in iter)
 
-def query(db, q_str):
-  if q_str:
-    for subquery, values in db.metaquery(q_str):
-      yield str(subquery), count(values)
 
 # expects list to be sorted
 def slice(items, size, dir, label="Other"):
@@ -51,8 +53,9 @@ def sort(iter, col, dir="ASC"):
 
   return sorted(iter, key=lambda r:r[col], reverse=reversed)
 
-def sorted_query(db, q_str, col=1):
-  return sort(query(db, q_str), col=col)
+def execute(q_str, col=1):
+  results = tasks.count.delay(q_str).get()
+  return sort(results, col=col)
 
 def ensure_dir(path):
   dirname = os.path.dirname(path)
@@ -60,28 +63,6 @@ def ensure_dir(path):
     os.makedirs(dirname)
 
 
-@app.before_first_request
-def open_db():
-  if __name__ == "__main__" and len(sys.argv) > 1:
-    fname = sys.argv[1]
-  else:
-    # fetch some data from s3
-    conn = boto.connect_s3(
-      os.environ['AWS_KEY'],
-      os.environ['AWS_SECRET']
-    )
-    bucket = conn.get_bucket('com.mozillalabs.blink')
-
-    item = iter(bucket.list('data/reduce:')).next()
-    fname = os.path.join(
-      os.environ['DATA_DB_PATH'],
-      str(item.key)
-    )
-    if not os.path.exists(fname):
-      ensure_dir(fname)
-      item.get_contents_to_filename(fname)
-    
-  app.db = DiscoDB.load(open(fname))
 
 
 @app.template_filter('value')
@@ -96,18 +77,59 @@ def commas(val):
 def index():
   q = request.args.get('q')
   if q:
-    results =  sorted_query(app.db, q)
+    results = execute(q)
   else:
     results = []
+    q = "*feature"
 
   return render_template(
-    'index.html', 
-    features = sorted_query(app.db, "*feature", col=0),
+    'index.html',
+    q = q,
+    features = execute("*feature", col=0),
     results = results,
     sort = sort,
     top = top,
     bottom = bottom
   )
+
+@app.route('/vega')
+def vega():
+  return render_template('vega.html')
+
+@app.route('/spec/')
+@app.route('/spec/<path:query>')
+def spec(query='*feature'):
+  """Generate a vega spec file from query"""
+
+  table = dict(
+    name="table",
+    values =  [
+      dict(x=x, y=y) 
+      for x,y in
+      execute(query)
+    ]
+  )
+   
+
+  response =  make_response(render_template(
+    'spec.json', 
+    data = json.dumps([table])
+  ))
+  response.headers['content-type'] = "application/json"
+  return response
+  
+
+
+@app.route('/json/')
+@app.route('/json/<path:query>')
+def json_endpoint(query='*feature'):
+
+  results =  execute(query)
+  return jsonify(
+    name=query,
+    values=[dict(x=x, y=y) for x,y in results]
+  )
+
 
 if __name__ == '__main__':
     app.run(
