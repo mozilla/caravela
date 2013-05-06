@@ -3,3 +3,5 @@ keys/
 notebook/
 data/
 .env
+.vagrant
+.pip
