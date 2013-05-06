@@ -83,15 +83,7 @@
         </div><!--/span-->
         <div class="span9">
           <div class="hero-unit">
-            <h1>{{request.args.get('q')}}</h1>
-            <table class="table table-condensed">
-              {% for query, count in top(results) %}
-              <tr>
-                <td>{{query}}</td>
-                <td class="number">{{count|commas}}</td>
-              </tr>
-              {% endfor %}
-            </table>
+            <div id="vis"></div>
           </div>
           <div class="row-fluid">
             <div class="span4">
@@ -140,8 +132,17 @@
     <script src="{{url_for('static', filename='js/jquery-1.9.1.min.js')}}"></script>
     <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
 
+    <script src="http://trifacta.github.com/vega/d3.v3.min.js"></script>
+    <script src="http://trifacta.github.com/vega/vega.js"></script>
+    <script src="http://trifacta.github.com/vega/d3.geo.projection.min.js"></script>
 
-
+<script type="text/javascript">
+// parse a spec and create a visualization view
+function parse(spec) {
+  vg.parse.spec(spec, function(chart) { chart({el:"#vis"}).update(); });
+}
+parse("spec/{{q}}");
+</script>
 
   </body>
 </html>
