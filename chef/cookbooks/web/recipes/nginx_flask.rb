@@ -7,12 +7,6 @@ user USER
 
 
 
-#template "/etc/blink.cfg" do
-#  mode 00644
-#  source "blink.cfg.erb"
-#end
-
-
 # setup nginx
 template "/etc/nginx/sites-enabled/default" do
   mode 00644
