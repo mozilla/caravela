@@ -1,4 +1,4 @@
-Welcome to the Caravela
+Welcome to Caravela
 ====================
 
 In the 15th century the Portuguese built ships that could take her crews further a 
