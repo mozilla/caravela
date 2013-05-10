@@ -2,6 +2,7 @@ lxml
 beautifulsoup4
 #git+https://github.com/trivio/codd.git#egg=codd
 codd >= 0.1.4
+urlnorm
 nose
 
 boto
