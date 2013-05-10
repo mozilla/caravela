@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo $1
+s3put \
+  -a $AWS_KEY \
+  -s $AWS_SECRET \
+  -b $S3_DATA_BUCKET \
+  -p $(dirname $1) \
+  -k "data" \
+  $1
