@@ -1,7 +1,7 @@
 Welcome to Caravela
 ====================
 
-In the 15th century the Portuguese built ships  that could take her crews further from land than any previous vesel, empowering a generation of bold explorers and traders.In that spirit we've created Caravela to gain deeper insights about the web and how it's built. 
+In the 15th century the Portuguese built ships that could take their crews further from land than any previous vesel, empowering a generation of bold explorers and traders. In that spirit we've created Caravela to gain deeper insights about the web and how it's built. 
 
 Think of us as a search engine that gives you answers to questions such as:
 
@@ -55,12 +55,7 @@ Here's an overview of the whole process. A series of documents are run through a
 ![Figure 1: Extraction Overview](/docs/imgs/extraction_overview.png "Figure 1: Extraction Overview")
 
 
-These *features* are collected into a data structure known as an inverted index which we can 
-query later on and use the results to build interesting visuals.
-
-
-
-
+These *features* are collected into a data structure known as an inverted index which we can query later on and use the results to build interesting visuals.
 
 
 Querying for data
