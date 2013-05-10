@@ -1,6 +1,7 @@
 """
-Trvi.io job used to extract features from the common craw corpus
+Trvi.io job used to extract features from the common crawl corpus
 """
+
 
 common_crawl_url = 's3://AKIAJ6PF5PWHFME4GA5A:hoHLkSwHztDHFEJr0z3iMrvQndgLfrDraxK3Oru7@aws-publicdatasets/common-crawl/crawl-002/'
 cc_features = rule(common_crawl_url,'cc_features')
@@ -8,13 +9,12 @@ cc_features.param('maxinput', 1)
 cc_features.param('unique_items', True)
 
 from disco.worker.classic.func import discodb_stream
-#
 cc_features.reduce_output_stream = discodb_stream
-#cc_features.sort = True
+
 
 @cc_features.map_reader
 def beautiful_soup(stream, size, url, params):
-  print "soups on"
+  #print "soups on"
   from bs4 import BeautifulSoup, SoupStrainer
   import time
 
@@ -51,7 +51,7 @@ def beautiful_soup(stream, size, url, params):
 
     if doc['content_type'] == 'text/html':
       try:
-        doc['html'] = BeautifulSoup(doc['payload'])
+        doc['dom'] = BeautifulSoup(doc['payload'])
       except Exception, e:
         doc['parse_exception'] = e
     yield doc
