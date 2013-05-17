@@ -16,7 +16,11 @@ from celery.task.schedules import crontab
 from celery.task import periodic_task
 from discodb import DiscoDB, DiscoDBError
 
+from db import DB
+
 from filelock import FileLock, FileLockException
+
+
 
 celery = Celery('tasks', backend='amqp', broker=os.environ['BROKER_URL'])
 logger = get_task_logger(__name__)
@@ -145,15 +149,23 @@ def count(q_str, limit=100, offset=0):
     ]
 
 @celery.task()
-def execute(q_str, limit=100, offset=0):
+def execute(cols=None, where=None, limit=100, offset=0):
   """select header"""
 
-  db = cached_db(state)
-  res = db.query(
-    "|".join(str(i) for i in xrange(offset, offset+limit))
-  )
+  db = DB(cached_db(state)).limit(limit).offset(offset)
 
-  return [json.loads(r) for r in res]
+  if cols:
+    db.select(*cols)
+
+  if where:
+    db.where(where)
+
+  return json.dumps(dict(
+    schema=db.schema, 
+    records=db.execute()
+  ))
+
+
 
 @celery.task()
 def ticks():

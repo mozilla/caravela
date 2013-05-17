@@ -4,8 +4,7 @@ from functools import partial
 from itertools import islice, chain
 import json
 
-from discodb import DiscoDB
-import boto
+
 from flask import (
   Flask, 
   render_template, 
@@ -62,9 +61,6 @@ def ensure_dir(path):
   if not os.path.exists(dirname):
     os.makedirs(dirname)
 
-
-
-
 @app.template_filter('value')
 def value(k):
   return k.split(':',1)[-1]
@@ -75,21 +71,9 @@ def commas(val):
 
 @app.route('/')
 def index():
-  q = request.args.get('q')
-  if q:
-    results = execute(q)
-  else:
-    results = []
-    q = "*feature"
-
   return render_template(
     'index.html',
-    q = q,
     features = execute("*feature", col=0),
-    results = results,
-    sort = sort,
-    top = top,
-    bottom = bottom
   )
 
 @app.route('/vega')
@@ -119,19 +103,16 @@ def spec(query='*feature'):
   return response
   
 
+@app.route('/json')
+def json_endpoint():
+  # move column parsing to the db module
 
-@app.route('/json/')
-@app.route('/json/<path:query>')
-def json_endpoint(query='*feature'):
+  cols = filter(None,request.args.get('cols','').split(','))
+   
+  limit = int(request.args.get('limit',100))
+  results = tasks.execute.delay(cols=cols,limit=limit).get()
+  response = make_response(results)
+  response.headers['content-type'] = "application/json"
 
-  results =  execute(query)
-  return jsonify(
-    name=query,
-    values=[dict(x=x, y=y) for x,y in results]
-  )
+  return response
 
-
-if __name__ == '__main__':
-    app.run(
-      debug=True
-    )
