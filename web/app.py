@@ -15,6 +15,7 @@ from flask import (
 
 from . import tasks
 
+
 app = Flask(__name__)
 
 
@@ -76,9 +77,7 @@ def index():
     features = execute("*feature", col=0),
   )
 
-@app.route('/vega')
-def vega():
-  return render_template('vega.html')
+
 
 @app.route('/spec/')
 @app.route('/spec/<path:query>')
@@ -108,7 +107,7 @@ def json_endpoint():
   # move column parsing to the db module
 
   cols = filter(None,request.args.get('cols','').split(','))
-   
+
   limit = int(request.args.get('limit',100))
   results = tasks.execute.delay(cols=cols,limit=limit).get()
   response = make_response(results)
@@ -116,3 +115,9 @@ def json_endpoint():
 
   return response
 
+@app.route("/insights")
+def list_insights():
+  return jsonify(insights=list(insights.all()))
+
+
+from . import insights

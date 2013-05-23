@@ -160,9 +160,11 @@ def execute(cols=None, where=None, limit=100, offset=0):
   if where:
     db.where(where)
 
+  records = db.execute()
+
   return json.dumps(dict(
     schema=db.schema, 
-    records=db.execute()
+    records=records
   ))
 
 

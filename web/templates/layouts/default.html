@@ -20,58 +20,35 @@
   </head>
 
   <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">
-          <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="brand" href="#">Caravela</a>
-            <div class="nav-collapse collapse">
-              <p class="navbar-text pull-right">
-                <button onclick="TowTruck(this); return false;">Start TowTruck</button>
-
-              </p>
-              <ul class="nav">
-                <li class="active"><a href="#">Explore</a></li>
-
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    Insights
-                    <b class="caret"></b>
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li><a href="#">Google Analytics</a></li>
-                  </ul>
-                </li>
-              </ul>
-            </div><!--/.nav-collapse -->
-          </div>
-        </div>
-      </div>
-
     {% block body %}{% endblock %}
     {% block script %}
     <script src="{{url_for('static', filename='js/jquery-1.9.1.min.js')}}"></script>
     <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
 
-    <!--
+    
     <script src="http://trifacta.github.com/vega/d3.v3.min.js"></script>
     <script src="http://trifacta.github.com/vega/vega.js"></script>
     <script src="http://trifacta.github.com/vega/d3.geo.projection.min.js"></script>
-    -->
+
 
     <script src="/static/lib/jquery-ui-1.10.1.custom.min.js"></script>
     <script src="/static/lib/jquery.mousewheel.js"></script>
     
-    <script src="/static/lib/handlebars.js"></script>
-    <script src="/static/lib/ember.js"></script>
-    <script src="/static/lib/ember-table.js"></script>
+    <script src="/static/lib/handlebars-1.0.0-rc.4.js"></script>
+    <script src="/static/lib/ember-latest.js"></script>
+    <script src="/static/lib/ember-data-latest.js"></script>
+    <script src="/static/lib/ember-table-latest.js"></script>
+
+    <script src="/static/codemirror-3.13/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="/static/codemirror-3.13/lib/codemirror.css">
+    <script src="/static/codemirror-3.13/mode/javascript/javascript.js"></script>
 
     <script src="/static/app.js"></script>
     <script src="/static/table_simple.js"></script>
+    <script src="/static/js/editor.js"></script>
+    <script src="/static/js/chart.js"></script>
+    <script src="/static/js/spec.js"></script>
+    <script src="/static/js/insight.js"></script>
     {% endblock %}
 
 

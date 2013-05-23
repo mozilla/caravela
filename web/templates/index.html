@@ -32,7 +32,10 @@
 {% endblock %}
 
 {% block body %}
+
   <script type="text/x-handlebars" data-template-name="application">
+
+    {% raw %}{{partial nav}}{% endraw %}
 
     <div class="container-fluid">
       <div class="row-fluid">
@@ -70,20 +73,22 @@
               <span class="add-on">Filter:</span>
               <input class="span9" type="text" placeholder="Enter row expresion">
             </div>
+            <button class="btn pull-right" {{action save}}>Save</button>
           </form>
         
         
-        <div class="pull-right">
+        <div class="pull-left">
           <i class="icon-download-alt"></i>  
           Download as: <a {{bindAttr href="App.query.url"}}>JSON</a>
-
-          <i class="icon-edit"></i>  
-          Create: <a {{bindAttr href="App.query.visualize_url"}}>Visual</a>
-
+        </div>
+        <div class="pull-right">
+          {{#linkTo 'table'}}<i class="icon-th-list"></i> Table{{/linkTo}}
+          {{#linkTo 'chart'}}<i class="icon-signal"></i> Chart{{/linkTo}}
+          {{#linkTo 'spec'}}<i class="icon-edit"></i> Edit{{/linkTo}}
         </div>
 
         <div class='presentation-container span9'>
-          {{view Ember.Table.TablesContainer controllerBinding="tableController"}}
+          {{outlet}}
         </div>
         {% endraw %}
  
@@ -96,7 +101,60 @@
       </footer>
 
     </div><!--/.fluid-container-->  
-    </script>
+  </script>
+
+  {% raw %}
+  <script type="text/x-handlebars" id="_nav">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">Caravela</a>
+          <div class="nav-collapse collapse">
+            
+            <button class="btn pull-right" onclick="TowTruck(this); return false;">Start TowTruck</button>
+           
+            <ul class="nav">
+              <li class="active"><a href="/">Explore</a></li>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Insights
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  {{#each model}}
+                  <li><a href="#">{{name}}</a></li>
+                  {{/each}}
+                </ul>
+              </li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+  </script>
+  <script type="text/x-handlebars" id="table">
+  {{view Ember.Table.TablesContainer }}
+  </script>
+
+  <script type="text/x-handlebars" id="spec">
+   <div class="well">
+    {{ view App.EditorView contentBinding="spec" }}
+   </div>
+  </script>
+
+
+  <script type="text/x-handlebars" id="chart">
+  </script>
+
+
+  {% endraw %}
 
 {% endblock %}
 
