@@ -11,12 +11,27 @@ def list_path(path):
     for f in os.listdir(abs_path)
   ]
 
+
+
 def all():
 
   for insight_path in list_path("insights"):
     try:
-      insight = json.load(open(insight_path))
-      insight['id'] = os.path.basename(insight_path)
+
+      insight = dict(
+        id = os.path.splitext(os.path.basename(insight_path))[0],
+        content=open(insight_path).read(),
+        limit = 10,
+        columns = ""
+      )
       yield insight
+    except GeneratorExit:
+      raise
     except:
       app.logger.exception("Error parsing %s", insight_path)
+
+def get(id):
+
+  for insight in all():
+    if insight['id'] == id:
+      return insight

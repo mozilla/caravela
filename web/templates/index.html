@@ -54,42 +54,7 @@
         </div><!--/span-->
 
         {% raw %}    
-        
-          <form class="form span9">
-            <div class="row-fluid input-prepend">
-              <span class="add-on span1">Columns:</span>
-              {{view 
-                Ember.TextField class="span9" 
-                placeholder="Enter column expression"
-                valueBinding="App.query.columns"
-              }}
-              
-            </div>
-            <div class="row-fluid input-prepend">
-              <span  class="add-on ">Rows:</span>
-              <input class="span9" type="text" placeholder="Enter row expresion">
-            </div>
-            <div class="row-fluid input-prepend">
-              <span class="add-on">Filter:</span>
-              <input class="span9" type="text" placeholder="Enter row expresion">
-            </div>
-            <button class="btn pull-right" {{action save}}>Save</button>
-          </form>
-        
-        
-        <div class="pull-left">
-          <i class="icon-download-alt"></i>  
-          Download as: <a {{bindAttr href="App.query.url"}}>JSON</a>
-        </div>
-        <div class="pull-right">
-          {{#linkTo 'table'}}<i class="icon-th-list"></i> Table{{/linkTo}}
-          {{#linkTo 'chart'}}<i class="icon-signal"></i> Chart{{/linkTo}}
-          {{#linkTo 'spec'}}<i class="icon-edit"></i> Edit{{/linkTo}}
-        </div>
-
-        <div class='presentation-container span9'>
-          {{outlet}}
-        </div>
+        {{outlet}}
         {% endraw %}
  
       </div><!--/row-->
@@ -119,16 +84,22 @@
             <button class="btn pull-right" onclick="TowTruck(this); return false;">Start TowTruck</button>
            
             <ul class="nav">
-              <li class="active"><a href="/">Explore</a></li>
+              <li><a href="#">Explore</a></li>
 
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  Insights
+              <li class="dropdown active">
+                <a href="#" class="dropdown-toggle " data-toggle="dropdown">
+                  Insights: <strong>{{controllers.insight.name}}</strong>
                   <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
                   {{#each model}}
-                  <li><a href="#">{{name}}</a></li>
+                    
+                    {{#unless isTemp}}
+                     <li>
+                       {{#linkTo 'insight.chart' this}}{{name}}{{/linkTo}}
+                     </li>
+                    {{/unless}}
+
                   {{/each}}
                 </ul>
               </li>
@@ -137,15 +108,54 @@
         </div>
       </div>
     </div>
-
   </script>
-  <script type="text/x-handlebars" id="table">
-  {{view Ember.Table.TablesContainer }}
+  
+  <script type="text/x-handlebars" id="insight">
+    <form class="form span9">
+      <div class="row-fluid input-prepend">
+        <span class="add-on span1">Columns:</span>
+        {{view 
+          Ember.TextField class="span9" 
+          placeholder="Enter column expression"
+          valueBinding="columns"
+        }}
+        
+      </div>
+      <div class="row-fluid input-prepend">
+        <span  class="add-on ">Rows:</span>
+        <input class="span9" type="text" placeholder="Enter row expresion">
+      </div>
+      <div class="row-fluid input-prepend">
+        <span class="add-on">Filter:</span>
+        <input class="span9" type="text" placeholder="Enter row expresion">
+      </div>
+      <button class="btn pull-right" {{action save}}>Save</button>
+    </form>
+
+    
+    <div class="pull-left">
+      <i class="icon-download-alt"></i>  
+      Download as: <a {{bindAttr href="controllers.query.url"}}>JSON</a>
+    </div>
+    <div class="pull-right">
+      {{#linkTo 'insight.table' model}}<i class="icon-th-list"></i> Table{{/linkTo}}
+      {{#linkTo 'insight.chart' model}}<i class="icon-signal"></i> Chart{{/linkTo}}
+      {{#linkTo 'insight.spec'  model}}<i class="icon-edit"></i> Edit{{/linkTo}}
+    </div>
+
+    <div class='presentation-container span9'>
+      {{outlet}}
+    </div>
   </script>
 
-  <script type="text/x-handlebars" id="spec">
+  <script type="text/x-handlebars" id="insight/table">
+    {{view Ember.Table.TablesContainer }}
+  </script>
+
+  <script type="text/x-handlebars" id="insight/spec">
+
    <div class="well">
-    {{ view App.EditorView contentBinding="spec" }}
+    {{ view App.EditorView contentBinding="controllers.insight.model.content" }}
    </div>
   </script>
 

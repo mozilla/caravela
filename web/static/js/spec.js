@@ -1,2 +1,3 @@
-App.SpecController = Em.ObjectController.extend({
+App.InsightSpecController = Em.ObjectController.extend({
+  needs: ['insight']
 });

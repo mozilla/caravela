@@ -119,5 +119,17 @@ def json_endpoint():
 def list_insights():
   return jsonify(insights=list(insights.all()))
 
+@app.route("/insights/<id>")
+def get_insight(id):
+
+  # if id == "temp":
+  #   return jsonify(insight=dict(
+  #     id="temp",
+  #     limit=100,
+  #     columns=[],
+  #     content=render_template('spec.json')
+  #   ))
+  # else:
+  return jsonify(insight=insights.get(id))
 
 from . import insights

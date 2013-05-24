@@ -1,19 +1,20 @@
-App.ChartController = Em.ObjectController.extend({
+App.InsightChartController = Em.ObjectController.extend({
+  needs: ['insight', 'query'],
+ 
 });
 
-App.ChartView = Em.View.extend({
+App.InsightChartView = Em.View.extend({
   classNames: ["Chart", "well"],
   viz: null,
   specUpdated: function(){
-
-    var spec   = this.get("controller.spec"),
+ 
+    var spec   = this.get("controller.model.spec"),
         element = this.get("element"),
-        documents = this.get("controller.model.content") || {};
+        documents = this.get("controller.controllers.query.records");
+
+    if(!spec || !element || !documents) return;
 
 
-    if(!spec || !element ) return;
-
-    spec = JSON.parse(spec);
 
     var self = this;    
     vg.parse.spec(spec, function(chart) {
@@ -30,7 +31,7 @@ App.ChartView = Em.View.extend({
       viz.update();
     });
 
-  }.observes("controller.spec"),
+  }.observes("controller.model.spec", "controller.controllers.query.records.@each"),
 
   didInsertElement: function(){
     this.specUpdated();
