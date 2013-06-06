@@ -10,6 +10,8 @@ Vagrant.configure("2") do |config|
     
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     config.vm.synced_folder "~/Projects/trivio.client", "/src/trivio.client"
+    config.vm.synced_folder "~/Projects/trivio.datasources", "/src/trivio.datasources"
+    
     config.vm.synced_folder "~/Projects/leisure", "/src/leisure"
     config.vm.synced_folder "~/Projects/codd", "/src/codd"
     config.vm.network :forwarded_port, guest: 80, host: 5000
