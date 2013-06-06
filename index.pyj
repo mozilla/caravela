@@ -2,8 +2,8 @@
 Trvi.io job used to extract features from the common crawl corpus
 """
 
+common_crawl_url = 's3://aws-publicdatasets/common-crawl/crawl-002/'
 
-common_crawl_url = 's3://AKIAJ6PF5PWHFME4GA5A:hoHLkSwHztDHFEJr0z3iMrvQndgLfrDraxK3Oru7@aws-publicdatasets/common-crawl/crawl-002/'
 cc_features = rule(common_crawl_url,'cc_features')
 cc_features.param('maxinput', 1)
 cc_features.param('unique_items', True)
@@ -14,7 +14,6 @@ cc_features.reduce_output_stream = discodb_stream
 
 @cc_features.map_reader
 def beautiful_soup(stream, size, url, params):
-  #print "soups on"
   from bs4 import BeautifulSoup, SoupStrainer
   import time
 
