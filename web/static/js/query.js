@@ -27,8 +27,6 @@ App.QueryController = Ember.Controller.extend({
 
 
   execute: _.debounce(function(){
-  console.log(this.get('columns'));
-
     var self = this;
     var array = [];
     Ember.$.getJSON(this.get('url'), function(json) {
