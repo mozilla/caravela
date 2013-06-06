@@ -67,11 +67,23 @@ class DB(object):
         yield "{}:{}".format(field, record[field]), doc_id
 
 
+  def get_value(self, attr):
+    """Returns a function that will retrive the value of an 
+    attribute from a record.
+
+    codd normally retrievs the values from the attr of the object
+    we're using dictionaries.
+    """
+    def getter(row, ctx):
+      return row.get(attr)
+    return getter
+
+
   def select(self,*cols):
     if cols:
       
       self.col_exps = [
-        codd.parse(col)
+        codd.parse(col, get_value=self.get_value)
         for col in cols
       ]
 

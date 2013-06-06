@@ -1,5 +1,6 @@
 Flask
 git+https://github.com/trivio/discodb.git
+git+https://github.com/trivio/codd.git
 boto
 celery
 gunicorn
