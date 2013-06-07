@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import codd
 from urlparse import urlparse, urljoin
 from urlnorm import norm as urlnorm
@@ -19,7 +21,11 @@ def header(doc):
   for header, value in doc['headers'].items():
     yield "header:{}".format(header), value
 
-
+def timestamp(doc):
+  tstamp = doc['headers'].get('x_commoncrawl_FetchTimestamp')
+  if tstamp:
+    tstamp = datetime.fromtimestamp(int(tstamp)/1000).isoformat()
+  yield "timestamp", tstamp
 
 def content_type(doc):
   """Returns contexnt_type:xxx"""
@@ -120,6 +126,7 @@ methods = [
   outbound(),
   css,
   header,
+  timestamp,
   tag
 ]
 
