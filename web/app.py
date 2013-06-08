@@ -1,9 +1,6 @@
 import os
 import sys
-from functools import partial
-from itertools import islice, chain
 import json
-
 
 from flask import (
   Flask, 
@@ -17,32 +14,6 @@ from . import tasks
 
 
 app = Flask(__name__)
-
-
-
-
-# expects list to be sorted
-def slice(items, size, dir, label="Other"):
-  if dir == "ASC":
-    i = iter(items)
-  elif dir == "DESC":
-    i = reversed(items)
-  else:
-    raise ValueError("dir must be ASC|DESC")
-
-  for item in islice(i, size):
-    yield item
-  
-  other = sum(item[1] for item in i)
-  if other > 0:
-    yield label, other
-
-
-def top(items, size=5):
-  return slice(items, size, "DESC")
-
-def bottom(items, size=5):
-  return slice(items, size, "ASC")
 
 
 def sort(iter, col, dir="ASC"):
@@ -76,7 +47,6 @@ def index():
     'index.html',
     features = execute("*feature", col=0),
   )
-
 
 
 @app.route('/spec/')
@@ -121,15 +91,6 @@ def list_insights():
 
 @app.route("/insights/<id>")
 def get_insight(id):
-
-  # if id == "temp":
-  #   return jsonify(insight=dict(
-  #     id="temp",
-  #     limit=100,
-  #     columns=[],
-  #     content=render_template('spec.json')
-  #   ))
-  # else:
   return jsonify(insight=insights.get(id))
 
 from . import insights
