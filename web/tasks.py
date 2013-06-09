@@ -155,7 +155,7 @@ def execute(cols=None, where=None, limit=100, offset=0):
   db = DB(cached_db(state)).limit(limit).offset(offset)
 
   if cols:
-    db.select(*cols)
+    db.select(cols)
 
   if where:
     db.where(where)

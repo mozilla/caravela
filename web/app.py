@@ -76,7 +76,8 @@ def spec(query='*feature'):
 def json_endpoint():
   # move column parsing to the db module
 
-  cols = filter(None,request.args.get('cols','').split(','))
+  #cols = filter(None,request.args.get('cols','').split(','))
+  cols = request.args.get('cols','').strip() or "*"
 
   limit = int(request.args.get('limit',100))
   results = tasks.execute.delay(cols=cols,limit=limit).get()

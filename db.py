@@ -1,11 +1,15 @@
-from discodb import DiscoDB
-from collections import namedtuple
-from functools import partial
+import math
+import string
+import inspect
 import json
 import ast
-from itertools import islice, count, groupby
 import operator
 
+from collections import namedtuple
+from functools import partial
+from itertools import islice, count, groupby
+
+from discodb import DiscoDB
 import codd
 
 
@@ -45,7 +49,7 @@ class DB(object):
 
     }
 
-    self.select(*self.__schema__)
+    self.select('*')
     self.start = 0
     self.stop = self.record_count
     
@@ -79,13 +83,21 @@ class DB(object):
     return getter
 
 
-  def select(self,*cols):
+  def select(self,cols):
     if cols:
-      
-      self.col_exps = [
-        codd.parse(col, get_value=self.get_value)
-        for col in cols
-      ]
+      if cols == '*':
+        cols = ','.join(self.__schema__)
+
+      self.col_exps = codd.parse(
+        "({})".format(cols), 
+        get_value=self.get_value
+      ).func_closure[0].cell_contents
+
+
+      #self.col_exps = [
+      #  codd.parse(col, get_value=self.get_value)
+      #  for col in cols
+      #]
 
       self.reducers = [
         (pos, self.aggregates[col.__name__])
@@ -135,7 +147,7 @@ class DB(object):
   def execute(self, *params):
     ctx = {
       'params': params,
-      'udf': self.aggregates
+      'udf': self.udfs()
     }
     table = (
       self.project(_load_value(record), ctx)
@@ -145,6 +157,25 @@ class DB(object):
     results = self.order(self.group(table),self.ordering)
     return results[self.start:self.stop]
 
+  def udfs(self):
+    def str_func(f):
+      def _(s,*args):
+        if s is None:
+          return None
+        else:
+          return f(s,*args)
+      return _
+
+    functions = dict(
+      set((n, str_func(f)) for n,f in inspect.getmembers(string, inspect.isfunction)) |
+      set(inspect.getmembers(math, inspect.isbuiltin))
+    )
+
+    functions['split_part'] = str_func(lambda s,delim, field: s.split(delim)[field] )
+
+    functions.update(self.aggregates)
+
+    return functions
 
   def __iter__(self):
     return self.filter(self.records)
