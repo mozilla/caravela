@@ -4,7 +4,6 @@ App.InsightController = Em.ObjectController.extend({
 
 App.Insight = DS.Model.extend({
 
-  limit: DS.attr('number', {defaultValue:10}),
   content: DS.attr('string'),
   
   spec: function(){
@@ -21,6 +20,21 @@ App.Insight = DS.Model.extend({
   columns: function(){
     return this.get('spec.columns');
   }.property('spec'),
+
+  order_by: function(){
+    return this.get('spec.order_by') || '';
+  }.property('spec'),
+
+  limit: function(){
+    return this.get('spec.limit');
+  }.property('spec'),
+
+  where: function(){
+    return this.get('spec.where');
+  }.property('spec'),
+
+
+
 
   name: function(){
     return this.get('spec.name');

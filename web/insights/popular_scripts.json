@@ -1,5 +1,9 @@
 {
   "columns": "script, count()",
+  "order_by": "count ASC",
+  "where": "script != None",
+  "limit": 10,
+
   "name": "Popular Scripts",
   "width": 580,
   "height": 200,

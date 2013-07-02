@@ -5,6 +5,8 @@ App.QueryController = Ember.Controller.extend({
   columnsBinding: "controllers.insight.columns",
   limitBinding: "controllers.insight.limit",
   whereBinding: "controllers.insight.where",
+  orderByBinding: "controllers.insight.order_by",
+
 
   _schema: Em.ArrayProxy.create({content:[]}),
   _records: Em.ArrayProxy.create({content:[]}),
@@ -22,15 +24,17 @@ App.QueryController = Ember.Controller.extend({
 
   url: function(){
 
-    var args = [
-      "limit=%@".fmt(this.get('limit')),
+    var args = [];
 
-    ]
-    var limit =  this.get('limit');
+    
+    var limit =  this.get('limit') || 10;
+    if(limit){
+      args.push("limit=%@".fmt(limit));
+    }
 
     var orderBy = this.get('orderBy');
     if(orderBy){
-      args.push('order_by=%@'.fmt(orderBy.join(' ')));
+      args.push('order_by=%@'.fmt(orderBy));
     }
 
     var cols = this.get('columns');
@@ -39,7 +43,6 @@ App.QueryController = Ember.Controller.extend({
     }
 
     var where = this.get('where');
-    console.log(where)
     if(where){
       args.push("where=%@".fmt(where));
     }
