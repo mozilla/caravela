@@ -8,4 +8,6 @@ end
 
 
 default["app"]["home"] = "/vagrant"
-default["app"]["name"] = "surveyor"
+default["app"]["name"] = "caravela"
+
+
