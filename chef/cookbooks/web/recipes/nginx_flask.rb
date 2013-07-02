@@ -25,7 +25,7 @@ gem_package "foreman"
 
 bash "create/update upstart scripts" do
   cwd "#{node[:app][:home]}"
-  code "foreman export --app #{node[:app][:name]} --user #{USER} upstart /etc/init"
+  code "foreman export --app #{node[:app][:name]} --user #{USER} upstart /etc/init -d #{node[:app][:home]}"
 end
 
 
