@@ -78,9 +78,20 @@ def json_endpoint():
 
   #cols = filter(None,request.args.get('cols','').split(','))
   cols = request.args.get('cols','').strip() or "*"
+  order_by = request.args.get('order_by', None)
+  if order_by:
+    order_by = order_by.split(',')
 
   limit = int(request.args.get('limit',100))
-  results = tasks.execute.delay(cols=cols,limit=limit).get()
+  where = request.args.get('where', None)
+
+  results = tasks.execute.delay(
+    cols=cols,
+    limit=limit,
+    order_by=order_by,
+    where = where
+  ).get()
+
   response = make_response(results)
   response.headers['content-type'] = "application/json"
 
