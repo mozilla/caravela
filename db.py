@@ -83,7 +83,7 @@ class DB(object):
     return getter
 
 
-  def select(self,cols):
+  def select(self,cols="*"):
     if cols:
       if cols == '*':
         cols = ','.join(self.__schema__)
@@ -149,6 +149,7 @@ class DB(object):
       'params': params,
       'udf': self.udfs()
     }
+
     table = (
       self.project(_load_value(record), ctx)
       for record in self
@@ -185,7 +186,7 @@ class DB(object):
   def project(self, record, ctx):
     return  self.result_class(*[col(record, ctx) for col in self.col_exps])
 
-  def groupby(self, *grouping):
+  def group_by(self, *grouping):
     self.grouping = grouping
     return self
 
@@ -239,11 +240,52 @@ class DB(object):
     return self.result_class(*reduce(reduction, records, initial))
 
 
+  def _order_key(self, attr, direction="desc"):
+    direction = direction.lower()
+    get_key = codd.parse(attr)
+
+    if direction == "desc":
+      return get_key
+    elif direction == "asc":
+      def invert(record, ctx):
+        value = get_key(record,ctx)
+        v_type = type(value)
+        # TODO: utilize types if/when we get them
+        if v_type in (int, float, long, complex):
+          return -value
+        elif v_type  in ( str,  bytearray):
+          return [-b for b in bytearray(value)]
+        elif v_type == unicode:
+          return [-b for b in bytearray(value.encode('utf-8'))]
+        else:
+          return None
+      return invert
+    else:
+      raise RuntimeError("direction must be DESC or ASC")
+
+  def _key_fun(self,*cols):
+    order_key = self._order_key
+
+    ordering  = [
+      order_key(*c.rsplit(None,1)) for c in cols
+    ]
+
+    def key_fun_(record):
+      return [key(record, None) for key in ordering]
+
+    return key_fun_
+
+
+  def order_by(self, *cols):
+    self.ordering = cols
+    return self
+
+
   def order(self, table, cols):
     if not cols:
       return list(table)
     else:
-      return sorted(table, key=operator.attrgetter(*cols))
+      return sorted(table, key=self._key_fun(*cols))
 
 
 
@@ -251,7 +293,12 @@ def disco_query(op):
   query = query_from(op)
 
   def filter(db):
-    return db.query(query)
+    return (
+      doc
+      for docid in db.query(query)
+      for doc in db[docid]
+    )
+
   return filter
 
 
@@ -269,12 +316,13 @@ def compare_exp(op):
   assert len(op.ops) == 1, "Not sure, why this would have multiple ops" 
   assert isinstance(op.left, ast.Name)
   assert len(op.comparators) == 1
-
+  
   comp_op = type(op.ops[0])
   attr = op.left.id
   if comp_op == ast.Eq:
-
-    return "*" + ikey(attr, value_exp(op.comparators[0]))
+    return  ikey(attr, value_exp(op.comparators[0]))
+  elif comp_op == ast.NotEq:
+    return "(*{} & ~{})".format(attr, ikey(attr, value_exp(op.comparators[0])))
   elif comp_op == ast.In:
     return "|".join([ "*" + ikey(attr,v) for v in value_exp(op.comparators[0])]) 
 
@@ -287,7 +335,8 @@ def value_exp(op):
   return {
     ast.Num: int_exp,
     ast.Str: str_exp,
-    ast.Tuple: tuple_exp
+    ast.Tuple: tuple_exp,
+    ast.Name: none_exp
   }[t](op)
 
 
@@ -299,6 +348,10 @@ def str_exp(op):
 
 def tuple_exp(op):
   return map(value_exp, op.elts)
+
+def none_exp(op):
+  assert op.id == 'None'
+  return None
 
 def bool_exp(op):
 
