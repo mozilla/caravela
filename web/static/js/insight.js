@@ -8,7 +8,14 @@ App.Insight = DS.Model.extend({
   content: DS.attr('string'),
   
   spec: function(){
-    return JSON.parse(this.get('content'));
+    var spec;
+    try{
+      spec = JSON.parse(this.get('content'));
+    }catch(e){
+      spec = {}
+    }
+
+    return spec;
   }.property('content'),
 
   columns: function(){
