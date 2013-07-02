@@ -44,10 +44,10 @@
             <ul class="nav nav-list">
               <li class="nav-header">Features</li>
               {% for feature, count in features %}
-              <li><a href="?q=*{{feature}}">
+              <li>
                 {{feature}}
                 <span class="badge badge-info pull-right">{{count|commas}}</span>
-              </a></li>
+              </li>
               {% endfor %}
             </ul>
           </div><!--/.well -->
@@ -121,15 +121,31 @@
         }}
         
       </div>
+
       <div class="row-fluid input-prepend">
         <span  class="add-on ">Rows:</span>
         <input class="span9" type="text" placeholder="Enter row expresion">
       </div>
       <div class="row-fluid input-prepend">
         <span class="add-on">Filter:</span>
-        <input class="span9" type="text" placeholder="Enter row expresion">
+        {{view 
+          Ember.TextField class="span4" 
+          placeholder="Filter: x is not None"
+          valueBinding="where"
+        }}
+       
+        <span class="add-on">Limit:</span>
+        {{view 
+          Ember.TextField class="span4 offset1" 
+          placeholder="Max rows e.g. to return a 100 enter 100"
+          valueBinding="limit"
+        }}
+ 
+      
+
+
       </div>
-      <button class="btn pull-right" {{action save}}>Save</button>
+      <!-- <button class="btn pull-right" {{action save}}>Save</button> -->
     </form>
 
     
@@ -163,6 +179,11 @@
   <script type="text/x-handlebars" id="chart">
   </script>
 
+  <script type="text/x-handlebars" data-template-name="table-header-tree-cell">
+      <span class='column-title' {{action sortByColumn view.column allowedKeys="meta" }}  >
+       {{view.column.headerCellName}}
+      </span>
+    </script>
 
   {% endraw %}
 

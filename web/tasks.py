@@ -149,7 +149,7 @@ def count(q_str, limit=100, offset=0):
     ]
 
 @celery.task()
-def execute(cols=None, where=None, limit=100, offset=0):
+def execute(cols=None, where=None, limit=100, offset=0, order_by=[]):
   """select header"""
 
   db = DB(cached_db(state)).limit(limit).offset(offset)
@@ -159,6 +159,9 @@ def execute(cols=None, where=None, limit=100, offset=0):
 
   if where:
     db.where(where)
+
+  if order_by:
+    db.order_by(*order_by)
 
   records = db.execute()
 

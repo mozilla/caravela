@@ -16,7 +16,9 @@ App.InsightTableController = Ember.Table.TableController.extend({
         return Ember.Table.ColumnDefinition.create({
           columnWidth: 220,
           headerCellName: name,
-          contentPath: name
+          contentPath: name,
+          sortAscending: false,
+          headerCellViewClass: 'App.HeaderTreeCell'
         });
       });
     }
@@ -32,8 +34,30 @@ App.InsightTableController = Ember.Table.TableController.extend({
     return records;
   }.property("controllers.query.records.@each"),
 
- 
 
+  sortByColumn: function(column){
+    //column.toggleProperty 'sortAscending'
+    //@set 'sortColumn', column
+    //@set 'sortAscending', column.get('sortAscending')
+
+    column.toggleProperty('sortAscending');
+    var direction = "DESC"
+    if (column.get('sortAscending')){
+      direction = "ASC"
+    }
+
+    this.set("controllers.query.orderBy", [
+      column.get('contentPath'),
+      direction
+    ]);
+   
+    
+  }
+
+});
+
+App.HeaderTreeCell = Ember.Table.HeaderCell.extend({
+  templateName: 'table-header-tree-cell'  
 });
 
 

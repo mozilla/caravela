@@ -3,6 +3,7 @@ from discodb import DiscoDB
 
 from nose.tools import eq_
 
+
 from . import TestCase
 import datetime
 
@@ -51,10 +52,10 @@ class TestDB(TestCase):
     eq_(len(self.db.reducers),1)
 
 
-    self.db.select("name", "count()")
+    self.db.select("name, count()")
     eq_(len(self.db.reducers),1)
 
-    self.db.select("count()", "bogus(login_count)")
+    self.db.select("count(), bogus(login_count)")
     eq_(len(self.db.reducers),2)
 
 
@@ -73,7 +74,7 @@ class TestDB(TestCase):
   def test_select_col_with_count(self):
 
     self.assertSequenceEqual(
-      self.db.select('name','count()').groupby("name").execute(),
+      self.db.select('name,count()').group_by("name").execute(),
       [
         ('Bob',1),
         ('John', 1)
@@ -85,6 +86,22 @@ class TestDB(TestCase):
       self.db.where("login_count == 2").execute(),
       [
         (2, "John")
+      ]
+    )
+
+    self.assertSequenceEqual(
+      self.db.where("login_count != 1").execute(),
+      [
+        (2, "John")
+      ]
+    )
+
+    self.assertSequenceEqual(
+      self.db.where("login_count != None").execute(),
+      [
+        (2, "John"),
+        (1, "Bob")
+       
       ]
     )
 
@@ -121,6 +138,65 @@ class TestDB(TestCase):
         (1,"Bob")
       ]
     )
+
+  def test_order_key(self):
+    get_key=self.db._order_key("blah")
+    ctx = None
+
+    class int_attr:
+      blah = 1
+
+    class str_attr:
+      blah = "foo"
+
+    class dict_attr:
+      blah = {}
+
+    eq_(get_key(int_attr, ctx), 1)
+    eq_(get_key(str_attr, ctx), 'foo')
+    eq_(get_key(dict_attr,ctx), {})
+
+    get_key=self.db._order_key("blah", "asc")
+    eq_(get_key(int_attr, ctx), -1)
+    eq_(get_key(str_attr, ctx), [-b for b in bytearray('foo')])
+    eq_(get_key(dict_attr, ctx), None)
+
+    get_key=self.db._order_key("blah", "DeSc")
+    eq_(get_key(int_attr, ctx), 1)
+    eq_(get_key(str_attr, ctx), 'foo')
+    eq_(get_key(dict_attr, ctx), {})
+
+
+  def test_order_by(self):
+    self.assertSequenceEqual(
+      self.db.order_by("name").execute(),
+      [
+        (1,"Bob"),
+        (2, "John")
+      ]
+    )
+
+  def test_order_by_asc(self):
+      self.assertSequenceEqual(
+        self.db.order_by("name ASC").execute(),
+        [
+          (2, "John"),
+          (1,"Bob")
+        ]
+      )
+
+  def test_multiple_order_by_asc(self):
+    #TODO: this test needs more data to prove it's correctness
+    self.assertSequenceEqual(
+      self.db.order_by("login_count","name ASC").execute(),
+      [
+        (1,"Bob"),
+        (2, "John"),
+       
+      ]
+    )
+
+
 
 
 
