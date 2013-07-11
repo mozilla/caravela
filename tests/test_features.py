@@ -67,19 +67,17 @@ class TestFeatureExtractors(TestCase):
     </html>
     """
     doc_features = list(features.tag(doc(content)))
+
     self.assertSequenceEqual(
       doc_features,
       [
-        ('tag', 'html'),
-        ('tag', 'html>body'),
-        ('tag', 'html>body>a'),
-        ('tag', 'html>body>a'),
-        ('tag', 'html>body>div'),
-        ('tag', 'html>body>div>span'),
-        ('tag', 'html>body>div>div'),
-        ('tag', 'html>body>div>div>ul'),
-        ('tag', 'html>body>div>div>ul>li'),
-        ('tag', 'html>body>div>div>ul>li')
+        ('tag', 'body:1'), 
+        ('tag', 'a:2'), 
+        ('tag', 'span:1'), 
+        ('tag', 'li:2'), 
+        ('tag', 'ul:1'), 
+        ('tag', 'html:1'), 
+        ('tag', 'div:2')
       ]
     )
    
