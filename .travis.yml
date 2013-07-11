@@ -9,4 +9,6 @@ install:
 - pip install -r requirements.txt --use-mirrors
 - pip install -r web/requirements.txt --use-mirrors
 
+env:
+- BROKER_URL=amqp://guest@localhost//
 script:  nosetests
