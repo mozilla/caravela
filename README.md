@@ -1,6 +1,8 @@
-Welcome to Caravela
 [![Build Status](https://travis-ci.org/mozilla/caravela.png)](https://travis-ci.org/mozilla/caravela)
+
+Welcome to Caravela
 ====================
+
 
 In the 15th century the Portuguese built ships that could take their crews further from land than any previous vesel, empowering a generation of bold explorers and traders. In that spirit we've created Caravela to gain deeper insights about the web and how it's built. 
 
