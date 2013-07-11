@@ -130,11 +130,14 @@ methods = [
   tag
 ]
 
+
+
 names    = [m.__name__ for m in methods]
 names.append('scheme')
 features = codd.parallel(*methods)
 
 def docid(params):
+  # TODO: need code similar to this if/when we run multiple workers
   #doc_count = params['doc_counter'] = params.get('doc_count',0)
   #return (doc_count * params['worker_count']) + params['worker_id']
   if not hasattr(params, 'doc_count'):
