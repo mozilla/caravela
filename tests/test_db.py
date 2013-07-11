@@ -10,16 +10,31 @@ import datetime
 class TestDB(TestCase):
   def setUp(self):
 
-    self.db = DB([
-      dict(
-        name="John",
-        login_count=2 
-      ),
-      dict(
-        name="Bob",
-        login_count=1
+    self.db = DB(
+      [
+        dict(
+          name="John",
+          login_count=2 
+        ),
+        dict(
+          name="Bob",
+          login_count=1
+        )
+      ],
+      schema=dict(
+        fields=[
+          dict(
+            name="name",
+            type="STRING"
+          ),
+          dict(
+            name="login_count",
+            type="INTEGER"
+          )
+
+        ]
       )
-    ])
+    )
 
   def test_select_all(self):
     self.assertSequenceEqual(
