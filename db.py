@@ -68,7 +68,9 @@ class DB(object):
       doc_id = _key(doc_id+1)
       yield doc_id, _value(record)
       for field in self.schema:
-        yield "{}:{}".format(field, record[field]), doc_id
+        value = record[field]
+        yield "{}:{}".format(field, value), doc_id
+        yield field, "{}:{}".format(field, value)
 
 
   def get_value(self, attr):
@@ -324,7 +326,7 @@ def compare_exp(op):
   elif comp_op == ast.NotEq:
     return "(*{} & ~{})".format(attr, ikey(attr, value_exp(op.comparators[0])))
   elif comp_op == ast.In:
-    return "|".join([ "*" + ikey(attr,v) for v in value_exp(op.comparators[0])]) 
+    return "|".join([  ikey(attr,v) for v in value_exp(op.comparators[0])]) 
 
 def ikey(key,value):
   return "{}:{}".format(key,value) 
