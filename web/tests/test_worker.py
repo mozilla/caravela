@@ -67,27 +67,6 @@ class TestDBWrapper(TestCase):
       [("A", "1"), ("A", "2"), ("B","1")]
     )
 
-    # scan has already been done, we should have no db
-    assert tasks.cached_db(state) is None
-    assert db_path not in state['dbs']
-    
-    state['cache_time'] = 0
-
     assert tasks.cached_db(state)
     assert db_path in state['dbs']
 
-  def test_query(self):
-    db_path = self.create_db(
-      'test',
-      [("A", "1"), ("A", "2"), ("B","1")]
-    )
-    res = tasks.query('A')
-    eq_(res, [("A", 2)])
-    eq_(tasks.query('*A'),[("1", 0),("2", 0)])
-
-
-
-    
-
-
-    
