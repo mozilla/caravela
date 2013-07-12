@@ -10,6 +10,5 @@ install:
 - pip install -r web/requirements.txt --use-mirrors
 
 env:
-- BROKER_URL=amqp://guest@localhost//
-- DATA_DB_PATH=/tmp/
+- BROKER_URL=amqp://guest@localhost// DATA_DB_PATH=/tmp/
 script:  nosetests
