@@ -11,4 +11,5 @@ install:
 
 env:
 - BROKER_URL=amqp://guest@localhost//
+- DATA_DB_PATH=/tmp/
 script:  nosetests
