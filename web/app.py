@@ -74,13 +74,9 @@ def spec(query='*feature'):
 
 @app.route('/json')
 def json_endpoint():
-  # move column parsing to the db module
 
-  #cols = filter(None,request.args.get('cols','').split(','))
   cols = request.args.get('cols','').strip() or "*"
   order_by = request.args.get('order_by', None)
-  if order_by:
-    order_by = order_by.split(',')
 
   limit = int(request.args.get('limit',100))
   where = request.args.get('where', None)
