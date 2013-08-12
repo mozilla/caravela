@@ -14,9 +14,17 @@ from celery.utils.log import get_task_logger
 from celery.task import periodic_task
 from celery.task.schedules import crontab
 from celery.task import periodic_task
+
 from discodb import DiscoDB, DiscoDBError
 
-from db import DB
+
+from splicer.compilers.local import is_aggregate
+from splicer.ast import GroupByOp, Var, Function
+
+
+import db
+
+
 
 from filelock import FileLock, FileLockException
 
@@ -152,22 +160,41 @@ def count(q_str, limit=100, offset=0):
 def execute(cols=None, where=None, limit=100, offset=0, order_by=[]):
   """select header"""
 
-  db = DB(cached_db(state)).limit(limit).offset(offset)
+
+  dataset = db.init(docs=cached_db(state))
+  query = dataset.frm('docs')
 
   if cols:
-    db.select(cols)
+    query = query.select(cols)
+
+
+  # query contains aggregate expresions, automatically add
+  # group_by columns
+  group_by = query.operations
+  if isinstance(group_by, GroupByOp):
+    exprs =  group_by.relation.exprs
+    names = []
+    for e in exprs:
+      if isinstance(e,Var):
+        names.append(e.path)
+      elif isinstance(e, Function):
+        if not is_aggregate(e, dataset):
+          names.append(e.name)
+    query = query.group_by(','.join(names))
 
   if where:
-    db.where(where)
+    query = query.where(where)
 
   if order_by:
-    db.order_by(*order_by)
+    query = query.order_by(order_by)
 
-  records = db.execute()
 
+
+
+  query = query.limit(limit).offset(offset)
   return json.dumps(dict(
-    schema=db.schema, 
-    records=records
+    schema=[f.name for f in query.schema.fields],
+    records=list(query)
   ))
 
 

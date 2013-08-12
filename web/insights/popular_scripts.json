@@ -1,7 +1,7 @@
 {
-  "columns": "script, count()",
-  "order_by": "count ASC",
-  "where": "script != None",
+  "columns": "scripts, count()",
+  "order_by": "count DESC",
+  "where": "scripts is not null",
   "limit": 10,
 
   "name": "Popular Scripts",
@@ -11,11 +11,11 @@
   "data": [
     {
       "name": "documents",
-      "-transform":[{"type": "filter", "test": "d.data.script"}]
+      "-transform":[{"type": "filter", "test": "d.data.scripts"}]
     }
     ],
   "scales": [
-    {"name":"y", "type":"ordinal", "range":"height", "domain":{"data":"documents", "field":"data.script"}},
+    {"name":"y", "type":"ordinal", "range":"height", "domain":{"data":"documents", "field":"data.scripts"}},
     {"name":"x",  "range":"width", "nice":true, "domain":{"data":"documents", "field":"data.count"}}
   ],
   "axes": [
@@ -32,7 +32,7 @@
           "x2": {"scale":"y", "value":0},
 
           
-          "y": {"scale":"y", "field":"data.script"},
+          "y": {"scale":"y", "field":"data.scripts"},
           "height": {"scale":"y", "band":true, "offset":-1}
           
         },

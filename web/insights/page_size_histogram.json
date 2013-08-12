@@ -1,5 +1,5 @@
 {
-  "columns": "size, count()",
+  "columns": "size_in_kilobytes, count()",
 
   "name": "Page Size Histogram",
   "width": 480,
@@ -7,7 +7,7 @@
   "padding": {"top": 10, "left": 50, "bottom": 20, "right": 10},
   "data": [{"name": "documents"}],
   "scales": [
-    {"name":"x", "type":"ordinal", "range":"width", "domain":{"data":"documents", "field":"data.size"}},
+    {"name":"x", "type":"ordinal", "range":"width", "domain":{"data":"documents", "field":"data.size_in_kilobytes"}},
     {"name":"y", "range":"height", "nice":true, "domain":{"data":"documents", "field":"data.count"}}
   ],
   "axes": [
@@ -20,7 +20,7 @@
       "from": {"data":"documents"},
       "properties": {
         "enter": {
-          "x": {"scale":"x", "field":"data.size"},
+          "x": {"scale":"x", "field":"data.size_in_kilobytes"},
           "width": {"scale":"x", "band":true, "offset":-1},
           "y": {"scale":"y", "field":"data.count"},
           "y2": {"scale":"y", "value":0}
