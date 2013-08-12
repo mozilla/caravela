@@ -62,19 +62,30 @@ def index(doc, params):
 
 @cc_features.reduce
 def reduce(iter, params):
-  from features import names
+  from features import names, schema
+  from string import digits
+
+  yield "__schema__", json.dumps(schema.to_dict())
 
   # output top level feature items, this will
   # let us navigate to the subitems
   # -> (('feature','script'),('feature','link')...)
   for name  in names:
     yield "feature", name
-       
+   
+  record_count = 0
+
   for k,v in iter:
+    if k[0] in digits:
+      # it's a record
+      record_count += 1
+
     # ('link:http:/foo.com', 2) -> ('link:http:/foo.com', '2')
     yield k, str(v)
     p = k.split(':',1)
     if len(p) == 2:
       # 'link:http:/foo.com' -> ('link', 'link:http:/foo.com')
       yield p[0], k
+
+  yield "__count__", str(record_count)
  

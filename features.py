@@ -1,6 +1,8 @@
 from datetime import datetime
 
 import codd
+from splicer import Schema
+
 from urlparse import urlparse, urljoin
 from urlnorm import norm as urlnorm
 import json
@@ -9,7 +11,7 @@ from collections import Counter
 def size(doc):
   """Returns size of the payload"""
   kilobytes = len(doc['payload']) / 1024
-  yield 'size', "{} k".format(kilobytes)
+  yield 'size_in_kilobytes', kilobytes
 
 def host(doc):
   """Returns the host for the given doc"""
@@ -18,8 +20,10 @@ def host(doc):
   yield "scheme", p.scheme
 
 def header(doc):
-  for header, value in doc['headers'].items():
-    yield "header:{}".format(header), value
+  yield 'headers', [dict(name=k, value=v) for k,v in doc['headers'].items()]
+
+  #for header, value in doc['headers'].items():
+  #  yield "header:{}".format(header), value
 
 def timestamp(doc):
   tstamp = doc['headers'].get('x_commoncrawl_FetchTimestamp')
@@ -42,11 +46,11 @@ def tag_attr(tag, attr, feature=None):
       for element in doc['dom'].find_all(tag):
         value = element.get(attr)
         if value:
-          yield feature, value
+          yield value
   _.__name__ = feature
   return _
 
-def tag(doc):
+def tags(doc):
   """
   Extracts each tag name from the document preserving it's hiearchy
   """
@@ -58,24 +62,8 @@ def tag(doc):
       if hasattr(t,'name') 
     ))
 
-    for k,v in counts.iteritems():
-      yield 'tag', "{}:{}".format(k,v)
-
-    return
-      
-
-  if dom:
-    for t in dom.descendants:
-      if hasattr(t, 'name'):
-        yield 'tag', t.name
-        # <div><span></span></div> -> (div, div:span)
-        #import pdb; pdb.set_trace()
-        #hiearchy = [p.name for p in t.parents][:-1]
-        #hiearchy.insert(0,t.name)
-        #yield 'tag', '>'.join(reversed(hiearchy)) 
-     
-  
-
+    yield "tags", [dict(name=k, count=v) for k,v in counts.iteritems()]
+ 
 
 def absolute_link(tag, attr, feature=None):
   """Extract a url from a tag returning it's absolute name.
@@ -94,10 +82,11 @@ def absolute_link(tag, attr, feature=None):
   def _(doc):
     doc_url = doc['url']
 
-    return (
-      (feature, u_norm(doc_url, url))
-      for feature, url in url_from(doc)
-    )
+    yield feature, [
+      u_norm(doc_url, url)
+      for url in url_from(doc)
+    ]
+
   _.__name__ = url_from.__name__
   return _
 
@@ -106,15 +95,21 @@ def outbound():
   def _(doc):
     doc_url = doc['url']
     doc_loc = urlparse(doc_url).netloc
-    for tagname, url in links(doc):
-      link_loc = urlparse(url).netloc
-      if link_loc and doc_loc != link_loc:
-        yield 'link_to', link_loc
+
+    yield "link_to", filter( 
+      lambda link_loc:  link_loc != doc_loc,
+      [
+        urlparse(url).netloc
+        for feature, urls in links(doc)
+        for url in urls
+      ]
+    )
+
   _.__name__ = "link_to"
   return _
 
 
-script   = absolute_link('script', 'src')
+scripts   = absolute_link('script', 'src', 'scripts')
 css      = absolute_link('link', 'href', 'css')
 
 
@@ -122,14 +117,54 @@ methods = [
   size,
   host,
   content_type,
-  script,
+  scripts,
   outbound(),
   css,
   header,
   timestamp,
-  tag
+  tags
 ]
 
+schema = Schema([
+  dict(name="size_in_kilobytes", type="INTEGER"),
+  dict(name="host", type="STRING"),
+  dict(name="content_type", type="STRING"),
+  dict(name="scripts", type="STRING", mode="REPEATED"),
+  dict(name="css", type="STRING", mode="REPEATED"),
+  dict(name="link_to", type="STRING", mode="REPEATED"),
+  dict(
+    name="headers", 
+    type="RECORD", 
+    mode="REPEATED",
+    fields=[
+      dict(
+        name="name",
+        type="string"
+      ),
+      dict(
+        name="value",
+        type="string"
+      )
+    ],
+   ),
+  dict(name="timestamp", type="DATETIME"),
+  dict(
+    name="tags", 
+    type="RECORD", 
+    mode="REPEATED",
+    fields=[
+      dict(
+        name="name",
+        type="string"
+      ),
+      dict(
+        name="count",
+        type="INTEGER"
+      )
+    ],
+  ),
+  dict(name="scheme", type="STRING")
+])
 
 
 names    = [m.__name__ for m in methods]
@@ -145,18 +180,87 @@ def docid(params):
   params.doc_count += 1
   return params.doc_count
 
+def default(schema):
+  """Given a schema return the default record"""
+
+  return {
+    f.name: [] if f.mode == "REPEATED" else None
+    for f in schema.fields
+  }
+
+def setfield(record, field, value):
+  if field.mode == "REPEATED":
+    if type(value) in (list, set):
+      record[field.name].extend(value)
+    else:
+      record[field.name].append(value)
+
+
+  else:
+    record[field.name]=value
+
+def index_field(field, value, root=''):
+
+  if field.mode == 'REPEATED':
+    if field.type == 'RECORD':
+      indexer = index_repeating_record
+    else:
+      indexer = index_repeating_scalar
+  else:
+    if field.type == 'RECORD':
+      indexer = index_record
+    else:
+      indexer = index_scalar
+
+  return indexer(field, value, root)
+
+def index_scalar(field, value, root):
+  yield "{}{}".format(root, field.name), value
+
+def index_repeating_scalar(field, value, root):
+  return (
+    (k,v)
+    for item in value
+    for k,v in index_scalar(field, item, root)
+  )
+
+def index_repeating_record(field, value, root):
+  return (
+    (k, v)
+    for item in value
+    for k,v in index_record(field, item, root) 
+  )
+
+def index_record(field, value, root):
+  
+  subroot = "{}{}.".format(root, field.name)
+
+  for subfield in field.fields:
+    for subkey, subvalue in index_field(subfield, value[subfield.name], subroot):
+      #print "{} -->{}".format(subkey, subvalue)
+      yield subkey, subvalue
+
+
 def extractor(doc, params):
   doc_id = docid(params)
   
   # ->(doc_id, http://..)
   #yield "{}".format(doc_id), doc['url']
+  
 
-  attrs = {}
+
+  record = default(schema)
+
   for feature, value in features(doc):
-    attrs[feature] = value
-    try:
-      yield str("%s:%s" % (feature,value)), doc_id
-    except Exception, e:
-      yield "error:{}".format(e), doc_id
+    #attrs[feature] = value
+    field = schema[feature]
+    setfield(record, field, value)
 
-  yield "{}".format(doc_id), json.dumps(attrs)
+    for key, value in index_field(field,value):
+      try:
+        key = str("%s=%s" % (feature,value))
+        yield key, doc_id
+      except Exception, e:
+        yield "error:{}".format(e), doc_id
+
+  yield "{}".format(doc_id), json.dumps(record)

@@ -1,9 +1,10 @@
-from nose.tools import eq_
+from nose.tools import *
 import bs4
 
 from . import TestCase
 
 import features
+from splicer import Field
 
 def doc(content, url="http://example.com/folder1/somedoc.html"):
   return dict(
@@ -23,11 +24,18 @@ class TestFeatureExtractors(TestCase):
     </body>
     </html>"""
 
-    doc_features =  list(features.script(doc(content)))
+    doc_features =  list(features.scripts(doc(content)))
     eq_(
       doc_features,
-      [('script', u'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'), 
-      ('script', u'http://ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js')]
+      [
+        (
+          'scripts', 
+          [
+            u'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', 
+            u'http://ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js'
+          ]
+        )
+      ]
     )
 
   def test_links(self):
@@ -44,7 +52,7 @@ class TestFeatureExtractors(TestCase):
     self.assertSequenceEqual(
       doc_features,
       [
-        ('link_to', 'blah.com'),
+        ('link_to', ['blah.com']),
       ]
     )
 
@@ -66,18 +74,90 @@ class TestFeatureExtractors(TestCase):
     </body>
     </html>
     """
-    doc_features = list(features.tag(doc(content)))
+    doc_features = list(features.tags(doc(content)))
 
     self.assertSequenceEqual(
       doc_features,
       [
-        ('tag', 'body:1'), 
-        ('tag', 'a:2'), 
-        ('tag', 'span:1'), 
-        ('tag', 'li:2'), 
-        ('tag', 'ul:1'), 
-        ('tag', 'html:1'), 
-        ('tag', 'div:2')
+        (
+          'tags',
+          [
+            {'count': 1, 'name': u'body'},
+            {'count': 2, 'name': u'a'},
+            {'count': 1, 'name': u'span'},
+            {'count': 2, 'name': u'li'},
+            {'count': 1, 'name': u'ul'},
+            {'count': 1, 'name': u'html'},
+            {'count': 2, 'name': u'div'}
+          ]
+        )
       ]
     )
    
+  def test_index_scalar(self):
+    field = Field(name="count", type="INTEGER")
+
+    results = list(features.index_scalar(field, 2, ''))
+    
+    assert_sequence_equal(
+      results,
+      [('count',2)]
+    )
+
+
+  def test_index_repeating_scalar(self):
+    field = Field(name="count", type="INTEGER", mode="REPEATED")
+
+    results = list(features.index_repeating_scalar(field, [1,2,3], ''))
+    
+    assert_sequence_equal(
+      results,
+      [
+        ('count',1),
+        ('count',2),
+        ('count',3)
+      ]
+    )
+
+  def test_index_record(self):
+    field = Field(
+      name="point", 
+      type="RECORD",
+      fields=[
+        dict(name="x", type="INTEGER"),
+        dict(name="y", type="INTEGER")
+      ]
+    )
+
+    results = list(features.index_record(field, dict(x=10,y=1), ''))
+    
+    assert_sequence_equal(
+      results,
+      [
+        ('point.x',10),
+        ('point.y',1)
+      ]
+    )
+
+  def test_repeating_index_record(self):
+    field = Field(
+      name="point", 
+      type="RECORD",
+      mode="REPEATED",
+      fields=[
+        dict(name="x", type="INTEGER"),
+        dict(name="y", type="INTEGER")
+      ]
+    )
+
+    results = list(features.index_repeating_record(field, [dict(x=1,y=1), dict(x=2,y=2)], ''))
+    
+    assert_sequence_equal(
+      results,
+      [
+        ('point.x',1),
+        ('point.y',1),
+        ('point.x',2),
+        ('point.y',2)
+      ]
+    )
