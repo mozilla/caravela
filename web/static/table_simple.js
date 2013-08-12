@@ -8,7 +8,8 @@ App.InsightTableController = Ember.Table.TableController.extend({
 
   columns: function(){
     var schema = this.get("controllers.query.schema");//Em.get("App.query.schema");
-
+    // TODO/BUG: this method fires off after sorting is complete
+    // which resets the state of sortAscending back to true which
     if (!schema){
       return [];
     }else{
@@ -17,7 +18,7 @@ App.InsightTableController = Ember.Table.TableController.extend({
           columnWidth: 220,
           headerCellName: name,
           contentPath: name,
-          sortAscending: false,
+          sortAscending: true,
           headerCellViewClass: 'App.HeaderTreeCell'
         });
       });
@@ -36,19 +37,15 @@ App.InsightTableController = Ember.Table.TableController.extend({
 
 
   sortByColumn: function(column){
-    //column.toggleProperty 'sortAscending'
-    //@set 'sortColumn', column
-    //@set 'sortAscending', column.get('sortAscending')
-
     column.toggleProperty('sortAscending');
-    var direction = "DESC"
-    if (column.get('sortAscending')){
-      direction = "ASC"
+
+    var direction = "ASC"
+    if (column.get('sortAscending') == false){
+      direction = "DESC"
     }
 
     this.set("controllers.query.orderBy", [
-      column.get('contentPath'),
-      direction
+      column.get('contentPath') + ' ' +direction
     ]);
    
     
