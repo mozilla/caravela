@@ -3,8 +3,10 @@ beautifulsoup4
 codd >= 0.1.4
 urlnorm
 nose
+coverage
 
 boto
+splicer>=0.0.3
 
 # these should be installed when you install the trivio client
 requests
