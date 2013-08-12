@@ -5,6 +5,8 @@ from unittest import TestCase
 
 from discodb import DiscoDB
 
+import splicer_discodb
+
 from nose.tools import eq_
 from web import tasks
 
@@ -25,6 +27,15 @@ class TestDBWrapper(TestCase):
     data.dump(open(db_path, 'w'))
     return db_path
   
+  def create_db2(self, name, fields, data):
+    db_path = os.path.join(os.environ['DATA_DB_PATH'], name + '.db')
+    schema = dict(
+      name=name,
+      fields=fields
+    )
+
+    db = splicer_discodb.create(db_path, schema, data)
+    db.dump(open(db_path, 'w'))
 
   def test_scan_database_dir(self):
     state = dict(
@@ -69,4 +80,24 @@ class TestDBWrapper(TestCase):
 
     assert tasks.cached_db(state)
     assert db_path in state['dbs']
+
+
+  def test_execute(self):
+
+    db_path = self.create_db2(
+      'test',
+      [
+        dict(name="col1", type="INTEGER"),
+        dict(name="col2", type="STRING"),
+
+      ],
+      [
+        dict(col1="mother", col2=1),
+        dict(col1="bob", col2=2)
+      ]
+    )
+
+    tasks.execute("col1")
+
+
 
