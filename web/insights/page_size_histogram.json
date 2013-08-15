@@ -1,5 +1,6 @@
 {
-  "columns": "size_in_kilobytes, count()",
+
+  "query": "select size_in_kilobytes, count() from docs group by size_in_kilobytes order by size_in_kilobytes",
 
   "name": "Page Size Histogram",
   "width": 480,

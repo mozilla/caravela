@@ -6,6 +6,11 @@
       padding-top: 60px;
       padding-bottom: 40px;
     }
+
+    section {
+      padding-top: 30px;
+    }
+
     .sidebar-nav {
       padding: 9px 0;
     }
@@ -28,6 +33,11 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
+  .sql-editor .CodeMirror { height: 5em; border: 1px solid #ddd; }
+  .sql-editor .CodeMirror-scroll { max-height: 200px; }
+  .sql-editor .CodeMirror pre { padding-left: 7px; line-height: 1.25; }
+  .sql-editor { padding-bottom: 5px;}
   </style>
 {% endblock %}
 
@@ -40,22 +50,28 @@
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span3">
+          <h4>Schema</h4>
           <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">Features</li>
-              {% for feature, count in features %}
+             <ul class="nav nav-list">
+              {% for table, schema in features %}
+              <li class="nav-header"> {{table}}</li>
+
+              {% for field in schema['fields'] %}
               <li>
-                {{feature}}
-                <span class="badge badge-info pull-right">{{count|commas}}</span>
+                {{field['name']}}
               </li>
+              {% endfor %}
+
               {% endfor %}
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
 
+        <div class="span8">
         {% raw %}    
         {{outlet}}
         {% endraw %}
+        </div>
  
       </div><!--/row-->
 
@@ -111,58 +127,35 @@
   </script>
   
   <script type="text/x-handlebars" id="insight">
-    <form class="form span9">
-      <div class="row-fluid input-prepend">
-        <span class="add-on span1">Columns:</span>
-        {{view 
-          Ember.TextField class="span9" 
-          placeholder="Enter column expression"
-          valueBinding="columns"
-        }}
-        
-      </div>
-
-      <!--
-      <div class="row-fluid input-prepend">
-        <span  class="add-on ">Rows:</span>
-        <input class="span9" type="text" placeholder="Enter row expresion">
-      </div>
-      -->
-      <div class="row-fluid input-prepend">
-        <span class="add-on">Filter:</span>
-        {{view 
-          Ember.TextField class="span4" 
-          placeholder="Filter: x is not None"
-          valueBinding="where"
-        }}
-       
-        <span class="add-on">Limit:</span>
-        {{view 
-          Ember.TextField class="span4 offset1" 
-          placeholder="Max rows e.g. to return a 100 enter 100"
-          valueBinding="limit"
-        }}
- 
-      
-
-
-      </div>
-      <!-- <button class="btn pull-right" {{action save}}>Save</button> -->
-    </form>
-
+    <h4>Query</h4>
     
-    <div class="pull-left">
-      <i class="icon-download-alt"></i>  
-      Download as: <a {{bindAttr href="controllers.query.url"}}>JSON</a>
+    <div class="row">
+      {{ view App.EditorView  class="sql-editor" contentBinding="query" }}
     </div>
-    <div class="pull-right">
-      {{#linkTo 'insight.table' model}}<i class="icon-th-list"></i> Table{{/linkTo}}
-      {{#linkTo 'insight.chart' model}}<i class="icon-signal"></i> Chart{{/linkTo}}
-      {{#linkTo 'insight.spec'  model}}<i class="icon-edit"></i> Edit{{/linkTo}}
+    
+    <div class="row">
+      <div class="pull-right">
+        {{controllers.query.execution_time}}
+        <button class="btn  btn-success " {{action  execute target="controllers.query" }}>Query</button>
+      </div>
+    </div>
+   
+    <div class="row">
+      <div class="pull-left">
+        <i class="icon-download-alt"></i>  
+        Download as: <a {{bindAttr href="controllers.query.url"}}>JSON</a>
+      </div>
+      <div class="pull-right">
+        {{#linkTo 'insight.table' model}}<i class="icon-th-list"></i> Table{{/linkTo}}
+        {{#linkTo 'insight.chart' model}}<i class="icon-signal"></i> Chart{{/linkTo}}
+        {{#linkTo 'insight.spec'  model}}<i class="icon-edit"></i> Edit{{/linkTo}}
+      </div>
     </div>
 
-    <div class='presentation-container span9'>
-      {{outlet}}
+    <div class="row">
+      <div class='presentation-container'>
+        {{outlet}}
+      </div>
     </div>
   </script>
 
@@ -171,7 +164,6 @@
   </script>
 
   <script type="text/x-handlebars" id="insight/spec">
-
    <div class="well">
     {{ view App.EditorView contentBinding="controllers.insight.model.content" }}
    </div>
@@ -182,10 +174,10 @@
   </script>
 
   <script type="text/x-handlebars" data-template-name="table-header-tree-cell">
-      <span class='column-title' {{action sortByColumn view.column allowedKeys="meta" }}  >
-       {{view.column.headerCellName}}
-      </span>
-    </script>
+    <span class='column-title' {{action sortByColumn view.column allowedKeys="meta" }}  >
+      {{view.column.headerCellName}}
+    </span>
+  </script>
 
   {% endraw %}
 

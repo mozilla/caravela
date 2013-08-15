@@ -1,12 +1,9 @@
 App.QueryController = Ember.Controller.extend({
   needs: ['insight'],
-  orderBy: null,
-  where: null,
-  columnsBinding: "controllers.insight.columns",
-  limitBinding: "controllers.insight.limit",
-  whereBinding: "controllers.insight.where",
-  orderByBinding: "controllers.insight.order_by",
 
+  queryBinding: "controllers.insight.query",
+  execution_time: "0.0s",
+  
 
   _schema: Em.ArrayProxy.create({content:[]}),
   _records: Em.ArrayProxy.create({content:[]}),
@@ -23,52 +20,55 @@ App.QueryController = Ember.Controller.extend({
 
 
   url: function(){
-
-    var args = [];
-
-    
-    var limit =  this.get('limit') || 10;
-    if(limit){
-      args.push("limit=%@".fmt(limit));
+    var query =  this.get('query');
+    if(query){
+      return "/query?q=" + query;
     }
+     
+  }.property("controllers.insight.model"),
 
-    var orderBy = this.get('orderBy');
-    if(orderBy){
-      args.push('order_by=%@'.fmt(orderBy));
-    }
-
-    var cols = this.get('columns');
-    if(cols){
-      args.push("cols=%@".fmt(cols));
-    }
-
-    var where = this.get('where');
-    if(where){
-      args.push("where=%@".fmt(where));
-    }
-
-
-    return "/json?" + args.join('&');
-    
-  }.property("columns", "limit", "orderBy", "where"),
-
-
-  execute: _.debounce(function(){
+  execute_stmt: function(stmt){
     var self = this;
+    var start = new Date().getTime();
+    var self = this;
+    self.set('execution_time', '0.0s');
+    var timer = setInterval(function(){
+      var elapsed = (new Date().getTime() - start) / 1000;
+       self.set('execution_time', elapsed.toFixed(1) + 's');
+    }, 50);
+    
     var array = [];
-    Ember.$.getJSON(this.get('url'), function(json) {
+    self.set('_records.content', []);
+
+    Ember.$.getJSON('/query?q='+stmt, function(json) {
       var schema = json.schema;
+      var array = [];
 
       self.set('_schema.content', schema);
       
       json.records.forEach(function(record,i){
         var o = _.object(schema, record);
+
         array.push(Em.Object.create(o));          
       });
 
       self.set('_records.content', array);
+
+    }).fail(function(){
+      alert('failure');
+    }).always(function(){
+      clearInterval(timer);
     });
-    return self;
+
+  },
+
+ 
+  execute: _.debounce(function(){
+    var query = this.get('query');
+    if(query){
+      this.execute_stmt(query);
+    }
   },300).observes('url')
+
 
 });

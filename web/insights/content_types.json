@@ -1,6 +1,7 @@
 {
-  "name": "Content Types",
-  "columns": "content_type, count()",
+  "name": "Non HTML Content",
+  "query": "select content_type, count() from docs where content_type != \"text/html\" group by content_type order by count desc limit 10",
+
   "width": 480,
   "height": 200,
   "padding": {"top": 10, "left": 50, "bottom": 20, "right": 10},

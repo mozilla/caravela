@@ -1,9 +1,6 @@
 {
-  "columns": "scripts, count()",
-  "order_by": "count DESC",
-  "where": "scripts is not null",
-  "limit": 10,
-
+  "query": "select scripts, count() from docs group by scripts order by count desc limit 10",
+ 
   "name": "Popular Scripts",
   "width": 480,
   "height": 200,

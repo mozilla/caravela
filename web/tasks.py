@@ -19,15 +19,12 @@ from discodb import DiscoDB, DiscoDBError
 
 
 from splicer.compilers.local import is_aggregate
-from splicer.ast import GroupByOp, Var, Function
+from splicer.ast import GroupByOp, Var, Function, SliceOp
 
 
 import db
 
-
-
 from filelock import FileLock, FileLockException
-
 
 
 celery = Celery('tasks', backend='amqp', broker=os.environ['BROKER_URL'])
@@ -142,19 +139,31 @@ def scan_database_dir(state):
   return state
 
 
+@celery.task()
+def relations():
+  dataset = db.init(docs=cached_db(state))
+  return [(name, schema.to_dict()) for name, schema in dataset.relations]
+
 
 @celery.task()
-def count(q_str, limit=100, offset=0):
-  logger.info(state)
-  db = cached_db(state)
+def schema(relation_name):
+  dataset = db.init(docs=cached_db(state))
+  return dataset.get_schema(relation_name).to_dict()
 
-  if not (q_str and  db):
-    return []
-  else:
-    return [
-      (str(subquery), len(values))
-      for subquery, values in islice(db.metaquery(q_str), offset,limit)
-    ]
+@celery.task()
+def query(statement):
+  dataset = db.init(docs=cached_db(state))
+  query = dataset.query(statement)
+
+  if not isinstance(query.operations, SliceOp):
+    query = dataset.frm(query).limit(100)
+
+  return json.dumps(dict(
+    schema=[f.name for f in query.schema.fields],
+    records=list(query)
+  ))
+
+
 
 @celery.task()
 def execute(cols=None, where=None, limit=100, offset=0, order_by=[]):

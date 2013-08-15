@@ -17,7 +17,9 @@ App.InsightTableController = Ember.Table.TableController.extend({
         return Ember.Table.ColumnDefinition.create({
           columnWidth: 220,
           headerCellName: name,
-          contentPath: name,
+          //contentPath: name,
+
+          getCellContent: function(row){return row[name]},
           sortAscending: true,
           headerCellViewClass: 'App.HeaderTreeCell'
         });

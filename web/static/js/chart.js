@@ -14,8 +14,6 @@ App.InsightChartView = Em.View.extend({
 
     if(!spec || !element || !documents) return;
 
-
-
     var self = this;    
     vg.parse.spec(spec, function(chart) {
       var viz = chart({el:element});

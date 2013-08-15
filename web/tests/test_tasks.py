@@ -7,7 +7,7 @@ from discodb import DiscoDB
 
 import splicer_discodb
 
-from nose.tools import eq_
+from nose.tools import *
 from web import tasks
 
 class TestDBWrapper(TestCase):
@@ -98,6 +98,13 @@ class TestDBWrapper(TestCase):
     )
 
     tasks.execute("col1")
+
+  def test_relations(self):
+    assert_sequence_equal(
+      tasks.relations(),
+      ['docs', 'top_sites']
+    )
+
 
 
 

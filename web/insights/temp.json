@@ -1,5 +1,6 @@
 {
-  "columns":"",
+  "query": "select * from docs limit 10",
+  
   
   "name": "temp",
   "width": 480,

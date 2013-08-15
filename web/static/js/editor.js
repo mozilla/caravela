@@ -3,10 +3,13 @@ App.reopen({
     classNames: ["Editor"],
     
     content: "",
+    mode: {name: "javascript", json: true},
+    lineNumbers: true,
+
     willDestroyElement: function(){
-      console.log('destroying view');
       this.editor = null;
     },
+
     didInsertElement: function(){
       // map command-save from anywhere to save(), it would be
       // nice if this was an event at the app level
@@ -18,7 +21,8 @@ App.reopen({
           element.appendChild(elt, element);
         },
         {
-          mode: {name: "javascript", json: true},
+          mode: this.get('mode'),
+          lineNumbers: this.get('lineNumbers'),
           value: content
         }
       );

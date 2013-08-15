@@ -43,9 +43,12 @@ def commas(val):
 
 @app.route('/')
 def index():
+  # this call should be cached
+  relations = tasks.relations.delay().get()
+
   return render_template(
     'index.html',
-    features = execute("*feature", col=0),
+    features = relations,
   )
 
 
@@ -71,6 +74,15 @@ def spec(query='*feature'):
   response.headers['content-type'] = "application/json"
   return response
   
+@app.route('/query')
+def query_endpoint():
+  q = request.args['q']
+
+  results = tasks.query.delay(q).get()
+  response = make_response(results)
+  response.headers['content-type'] = "application/json"
+  return response
+
 
 @app.route('/json')
 def json_endpoint():
