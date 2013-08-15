@@ -6,5 +6,5 @@ s3put \
   -s $AWS_SECRET \
   -b $S3_DATA_BUCKET \
   -p $(dirname $1) \
-  -k "data" \
+  -k "v2/data" \
   $1
