@@ -6,7 +6,7 @@ nose
 coverage
 
 boto
-splicer>=0.0.3
+splicer>=0.0.6
 
 # these should be installed when you install the trivio client
 requests
