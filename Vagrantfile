@@ -17,6 +17,7 @@ Vagrant.configure("2") do |config|
 
     config.vm.synced_folder "~/Projects/splicer", "/src/splicer"
     config.vm.synced_folder "~/Projects/splicer_discodb", "/src/splicer_discodb"
+    config.vm.synced_folder "~/Projects/splicer_arc", "/src/splicer_arc"
     config.vm.synced_folder "~/Projects/splicer_console", "/src/splicer_console"
 
     config.vm.network :forwarded_port, guest: 80, host: 5000
