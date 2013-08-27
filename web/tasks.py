@@ -158,9 +158,12 @@ def query(statement):
   if not isinstance(query.operations, SliceOp):
     query = dataset.frm(query).limit(100)
 
+
+  result = query.execute()
+
   return json.dumps(dict(
-    schema=[f.name for f in query.schema.fields],
-    records=list(query)
+    schema=[f.name for f in result.schema.fields],
+    records=list(result)
   ))
 
 

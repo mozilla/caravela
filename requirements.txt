@@ -1,6 +1,6 @@
 lxml
 beautifulsoup4
-codd >= 0.1.4
+codd >= 0.1.8
 urlnorm
 nose
 coverage
