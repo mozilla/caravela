@@ -1,5 +1,5 @@
 {
-  "query": "select scripts, count() from docs group by scripts order by count desc limit 10",
+  "query": "select * from scripts limit 10",
  
   "name": "Popular Scripts",
   "width": 480,
@@ -8,11 +8,11 @@
   "data": [
     {
       "name": "documents",
-      "-transform":[{"type": "filter", "test": "d.data.scripts"}]
+      "-transform":[{"type": "filter", "test": "d.data.script"}]
     }
     ],
   "scales": [
-    {"name":"y", "type":"ordinal", "range":"height", "domain":{"data":"documents", "field":"data.scripts"}},
+    {"name":"y", "type":"ordinal", "range":"height", "domain":{"data":"documents", "field":"data.script"}},
     {"name":"x",  "range":"width", "nice":true, "domain":{"data":"documents", "field":"data.count"}}
   ],
   "axes": [
@@ -29,7 +29,7 @@
           "x2": {"scale":"y", "value":0},
 
           
-          "y": {"scale":"y", "field":"data.scripts"},
+          "y": {"scale":"y", "field":"data.script"},
           "height": {"scale":"y", "band":true, "offset":-1}
           
         },
