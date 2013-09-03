@@ -1,14 +1,13 @@
-App.InsightChartController = Em.ObjectController.extend({
-  needs: ['insight', 'query'],
- 
-});
-
 App.InsightChartView = Em.View.extend({
-  classNames: ["Chart", "well"],
+  classNames: ["chart"],
+
+  thumbNailBinding: "controller.thumbNail",
+  width:null,
+  height: null,
   viz: null,
   specUpdated: function(){
- 
-    var spec   = this.get("controller.model.spec"),
+
+    var spec   = this.get("controller.spec"),
         element = this.get("element"),
         documents = this.get("controller.controllers.query.records");
 
@@ -27,12 +26,20 @@ App.InsightChartView = Em.View.extend({
       
 
       viz.update();
+      self.set('thumbNail', self.makeThumbNail());
     });
 
-  }.observes("controller.model.spec", "controller.controllers.query.records.@each"),
+
+
+  }.observes("controller.spec", "controller.controllers.query.records.@each"),
 
   didInsertElement: function(){
     this.specUpdated();
+  },
+
+  makeThumbNail: function(){
+    var canvas = this.$("canvas")[0];
+    return canvas.toDataURL("image/png");
   }
 
 

@@ -1,0 +1,382 @@
+/*
+  Welcome to Compass.
+  In this file you should write your main styles. (or centralize your imports)
+  Import this file using the following HTML or equivalent:
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+@import compass/reset
+
+
+$elusiveWebfontPath: "font/Elusive-Icons"
+@import elusive-webfont
+
+
+$main-background: #FFF
+$main-foreground: rgb(51,51,51)
+$main-border-color: rgb(238, 238, 238)
+$sidebar-background: rgb(77,78,83)
+$sidebar-group-header: rgb(149,154,164)
+$sidebar-foreground:  rgb(245,245,245) 
+$font-regular: "Open Sans", sans-serif
+
+@mixin border
+  border-bottom: 1px solid rgb(238, 238, 238)
+
+@mixin widget($foreground, $background)
+  background-color: $background
+  border: 1px solid $foreground
+  border-radius: 4px
+  color: $foreground
+  padding: 4px
+  font-family: $font-regular
+  font-fammily: $font-regular
+  font-weight: 300
+  font-size: 16px
+
+@mixin placeholder
+  &.placeholder
+    @content
+        
+  &:-moz-placeholder 
+    @content 
+        
+  &::-webkit-input-placeholder 
+    @content 
+        
+=circle-border($color)
+  border-radius: 50%
+  -moz-border-radius: 50%
+  -webkit-border-radius: 50%
+  border: 1px solid $color
+
+
+html
+  -webkit-font-smoothing: antialiased
+  height: 100%
+
+
+body
+  background-color: $main-background
+  font-family: $font-regular
+  font-size: 16px
+
+
+.avatar
+  border-radius: 50%
+  -moz-border-radius: 50%
+  -webkit-border-radius: 50%
+  width: 20px
+  height: 20px
+  border: 1px solid rgba(255,255,255,.5)
+  vertical-align: middle
+
+
+.sidebar
+  width: 240px
+  background: $sidebar-background
+  color: $sidebar-foreground
+  z-index: 1
+  overflow: hidden
+  position: fixed
+  top: 0
+  bottom: 0
+
+  a
+    color: $sidebar-foreground
+    text-decoration: none
+
+  header
+    margin: 10px 0 5px 20px
+    height: 44px
+    line-height: 44px
+
+  header a.logo
+    color: $sidebar-foreground
+    text-decoration: none
+    font-weight: 300px
+    font-size: 20px
+
+
+  header .button-group
+
+    a
+      padding: 8px
+      float: right
+      margin-left: 4px
+      text-align: center
+      vertical-align: top
+      line-height: 1
+
+      :last-child
+        margin-left: 0
+
+      i
+        opacity: .5
+
+
+    a:hover
+      i
+        opacity: 1
+
+    .active      
+      i
+        opacity: 1
+
+
+  li
+    margin: 10px 0 5px 20px
+    font-size: 80%
+    letter-spacing: 0
+
+    i
+      font-size: 16px
+
+    h5
+      padding-top: 20px
+      color: $sidebar-group-header
+      text-transform: uppercase
+
+      a
+        color: $sidebar-group-header
+      i
+        display: none
+        font-size: 80%
+        line-height: 1.5em
+        width: 1.5em
+        margin-right: 20px
+        padding-left: 1px
+        padding-top: 1px
+        +circle-border($sidebar-group-header)
+        vertical-align: middle
+
+
+      &:hover i
+        display: inherit
+
+
+
+    a.active
+      font-weight: bold
+
+
+  .scroll
+    position: absolute
+    top: 60px
+    bottom: 60px
+    left: 0px
+    right: 0px
+
+    overflow-x: hidden
+    overflow-y: scroll
+
+
+
+  footer
+    height: 44px
+    padding: 8px
+    line-height: 44px
+    position: absolute
+    bottom: 0
+    background-color: $sidebar-background
+
+
+    li
+      color: $sidebar-group-header
+      font-weight: 300
+      display: inline
+
+      i
+        color: $sidebar-group-header
+
+.main
+  padding-left: 240px
+  h1, h2, h3, h4
+    font-weight: 300
+    padding-top: 12px
+
+  h1
+    +border
+    color: $main-foreground
+    height: 60px
+    line-height: 60px
+    text-indent: 30px
+    font-size: 28px
+    
+
+
+    i
+      font-size: 24px
+      position: absolute
+      right: 160px
+      color: $main-border-color
+
+  h2
+    font-size: 18px
+
+  h3
+    font-size: 18px
+    padding-top: 18px
+    font-weight: normal
+    
+
+  .schema
+    p
+      font-size: 18px
+      font-weight: 300
+      padding-top: 8px
+    
+
+  ul
+   
+
+    li
+      +border
+      padding-top: 8px
+      padding-bottom: 18px
+      padding-left: 30px
+      padding-right: 30px
+      min-height: 125px
+      overflow: auto
+
+  table
+    margin-top: 18px
+    width: 500px
+
+  td
+    font-weight: 300
+    font-size: 11pt
+    border: 1px solid $main-border-color
+    padding: 8px
+    width: 96px
+    text-align:center
+
+  td.name
+    width: 250px
+    background-color: rgba(229, 230, 230, .2)
+
+
+.feed
+  .avatar
+    width: 42px
+    height: 42px
+    vertical-align: top
+
+  .visual
+    display: inline-block
+    width: 192px
+    height: 120px
+    
+    .caption
+      font-size: 8pt
+      margin-bottom: 20px
+
+    .chart
+      margin-top: 10px
+      border: 1px solid $main-border-color
+      background-color: $sidebar-foreground
+      width: 120px
+      height: 60px
+
+
+.query
+  .results
+    height: 420px
+    padding-top: 12px
+    padding-left: 30px
+    padding-right: 30px
+      
+.insight
+  padding-top: 8px
+
+  .CodeMirror
+    height: 10em
+    border: 1px solid #ddd
+    margin-bottom: 10px
+
+  .data-source
+    margin-bottom: 10px
+    border: 1px solid $main-border-color
+    line-height: 2em
+
+  .data-source:before
+    padding: 6px
+    margin-right: 12px
+    border-right: 1px solid $main-border-color
+    content: "DATA SOURCE"
+    background-color: rgba(229, 230, 230, .2)
+  
+ 
+  //.CodeMirror-scroll
+  //  max-height: 200px 
+  //.CodeMirror pre { padding-left: 7px; line-height: 1.25; }
+
+
+.sign-in, .welcome
+  position: absolute
+  top: 0px
+  bottom: 0px
+  right: 0px
+  left: 0px
+
+  background: $sidebar-background
+  color: $sidebar-foreground
+  font-weight: 300
+  
+  .avatar
+    width: 42px
+    height: 42px
+
+
+  h1
+    font-size: 36pt
+    font-weight: 300
+    margin: 0 auto
+    width: 720px
+    padding-top: 5%
+
+  h2
+    font-size: 28pt
+    font-weight: 300
+    margin: 0 auto
+    width: 640px
+    padding-top: 5%
+
+
+  p
+    padding-left: 24px
+    padding-top: 1em
+    font-size: 18pt
+    margin: 0 auto
+    line-height: 1em
+    width: 640px
+  
+.welcome
+  input, button
+    +widget($sidebar-foreground, transparent)
+  input
+    padding-left: 20px
+    padding-right: 20px
+    width: 480px
+  
+    +placeholder
+      font-style: italic
+
+  button
+    padding-top: 5px
+    padding-bottom: 5px
+    padding-left: 20px
+    padding-right: 20px
+
+    &:hover
+      background-color: rgba(245,245,245,.1) 
+    &:active
+      background-color: $sidebar-foreground
+      color: $sidebar-background
+
+
+
+.ember-application > .ember-view
+  height: 100%
+
+#tabzilla-panel
+  z-index: 100

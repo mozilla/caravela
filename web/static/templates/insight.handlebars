@@ -1,0 +1,22 @@
+<h1 >{{name}} <i class="icon-info-sign pull-right"></i></h1>
+
+<ul class="insight">
+  <li class="editor">
+    <div class="data-source">
+      {{#linkTo 'query'}}{{query}}{{/linkTo}}
+    </div>
+
+    {{ view App.EditorView contentBinding="model.content" }}
+    
+    <div class="btn-group">
+      <a class="btn" {{action save}}><i class="icon-hdd"></i>  Save</a>
+      <a class="btn" {{action publish}}><i class="icon-bullhorn"></i> Publish</a>
+    </div>
+
+    {{#linkTo 'query' class="btn"}}<i class="icon-th"></i> Data{{/linkTo}}
+
+  </li>
+  <li class="chart">
+    {{outlet}}
+  </li>
+</ul>

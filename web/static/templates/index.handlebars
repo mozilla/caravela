@@ -1,0 +1,30 @@
+<h1>Feed</h1>
+
+<div class="feed">
+
+<ul>
+{{#each  itemController="insight" }}
+  {{#unless isTemp}}
+  <li>
+  <img class="avatar" {{bindAttr src="avatar_url"}} />
+
+
+  <div class="visual">
+    <span class="caption">Scott Robertson added</span>
+    <img class="chart" {{bind-attr src="thumbNail"}} />
+
+  </div>
+
+  <a {{action "showInsight" this}}>{{name}}</a>
+  
+  <p>
+    This chart shows all the non-html content within
+    the CommonCrawl Corpus.
+  </p>
+
+  </li>
+  {{/unless}}
+{{/each}}
+</ul>
+
+</div>

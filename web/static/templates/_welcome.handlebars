@@ -1,0 +1,29 @@
+<div class="welcome">
+<h1>Welcome!</h1>
+
+<h2>
+  <img class="avatar" {{bindAttr src="user.avatar_url"}} />
+  {{user.email}}
+
+  <a {{action  logout}}>logout</a>
+</h2>
+
+<p>
+  We're looking forward to your feedback before we scale!
+</p>
+
+<p>
+Keep an eye on your mailbox, your invite will arrive soon.
+</p>
+
+<p>
+In the mean time, why don't you tell us how your name should
+appear to other Caravela users?
+</p>
+
+<p>
+  {{input value=user.nickname placeholder="Enter your name"}}
+  <button {{action save target="user"}}>{{user.record_state}}</button>
+</p>
+
+</div>

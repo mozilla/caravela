@@ -3,6 +3,13 @@ keys/
 notebook/
 data/
 .env
-.vagrant
+.vagrant*
+.coverage
+.noseids
 .pip
 .DS_Store
+celerybeat.pid
+celerybeat-schedule
+web/static/.webassets-cache
+web/static/.sass-cache
+web/static/assets

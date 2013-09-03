@@ -1,0 +1,40 @@
+ <div class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container">
+    <a class="brand" href="#">Caravela</a>
+      
+    <ul class="nav">
+      <li><a href="#">Explore</a></li>
+
+      <li class="dropdown active">
+        <a href="#" class="dropdown-toggle " data-toggle="dropdown">
+          Insights: <strong>{{controllers.insight.name}}</strong>
+          <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+          {{#each model}}
+            
+            {{#unless isTemp}}
+             <li>
+               {{#linkTo 'insight.chart' this}}{{name}}{{/linkTo}}
+             </li>
+            {{/unless}}
+
+          {{/each}}
+        </ul>
+      </li>
+    </ul>
+
+    <ul class="nav pull-right">
+      <li>
+        {{#if user}}
+          <a href="#" id="logout" class="persona-button dark" {{action  logout}}>
+            <span>{{user.email}}</span>
+          </a>
+        {{else}}
+          <a href="#" id="login" class="persona-button dark" {{action  login}}>         
+            <span>Sign in with your Email</span>
+          </a>
+        {{/if}}
+      </li>
+    </ul>
+  
+  </div></div></div>

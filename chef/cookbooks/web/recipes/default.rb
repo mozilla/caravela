@@ -15,6 +15,7 @@ package "libevent-dev"
 
 package "rabbitmq-server"
 
+ruby_gem "compass"
 
 directory "/srv/" do
   action :create

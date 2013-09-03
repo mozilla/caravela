@@ -1,186 +1,40 @@
 {% extends "layouts/default.html" %}
+
 {% block head %}
-  {{ super() }}
-  <style type="text/css">
-    body {
-      padding-top: 60px;
-      padding-bottom: 40px;
-    }
+{{ super() }}
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
 
-    section {
-      padding-top: 30px;
-    }
+  {% assets "common.css" %}
+    <link media="screen" rel="stylesheet" type="text/css" href="{{ ASSET_URL }}" />
+  {% endassets %}    
 
-    .sidebar-nav {
-      padding: 9px 0;
-    }
+  {% assets "sass.css" %}
+    <link media="screen" rel="stylesheet" type="text/css" href="{{ ASSET_URL }}" />
+  {% endassets %}
 
-    @media (max-width: 980px) {
-      /* Enable use of floated navbar text */
-      .navbar-text.pull-right {
-        float: none;
-        padding-left: 5px;
-        padding-right: 5px;
-      }
-    }
 
-    .table td.number {
-       text-align: right;
-    }
-    td{
-      max-width: 100px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-  .sql-editor .CodeMirror { height: 5em; border: 1px solid #ddd; }
-  .sql-editor .CodeMirror-scroll { max-height: 200px; }
-  .sql-editor .CodeMirror pre { padding-left: 7px; line-height: 1.25; }
-  .sql-editor { padding-bottom: 5px;}
-  </style>
+  <link href="//mozorg.cdn.mozilla.net/media/css/tabzilla-min.css" rel="stylesheet" />
 {% endblock %}
 
 {% block body %}
-
-  <script type="text/x-handlebars" data-template-name="application">
-
-    {% raw %}{{partial nav}}{% endraw %}
-
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span3">
-          <h4>Schema</h4>
-          <div class="well sidebar-nav">
-             <ul class="nav nav-list">
-              {% for table, schema in features %}
-              <li class="nav-header"> {{table}}</li>
-
-              {% for field in schema['fields'] %}
-              <li>
-                {{field['name']}}
-              </li>
-              {% endfor %}
-
-              {% endfor %}
-            </ul>
-          </div><!--/.well -->
-        </div><!--/span-->
-
-        <div class="span8">
-        {% raw %}    
-        {{outlet}}
-        {% endraw %}
-        </div>
- 
-      </div><!--/row-->
-
-      <hr>
-
-      <footer>
-        <p>&copy; Company 2013</p>
-      </footer>
-
-    </div><!--/.fluid-container-->  
-  </script>
-
-  {% raw %}
-  <script type="text/x-handlebars" id="_nav">
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="brand" href="#">Caravela</a>
-          <div class="nav-collapse collapse">
-            
-            <button class="btn pull-right" onclick="TowTruck(this); return false;">Start TowTruck</button>
-           
-            <ul class="nav">
-              <li><a href="#">Explore</a></li>
-
-              <li class="dropdown active">
-                <a href="#" class="dropdown-toggle " data-toggle="dropdown">
-                  Insights: <strong>{{controllers.insight.name}}</strong>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  {{#each model}}
-                    
-                    {{#unless isTemp}}
-                     <li>
-                       {{#linkTo 'insight.chart' this}}{{name}}{{/linkTo}}
-                     </li>
-                    {{/unless}}
-
-                  {{/each}}
-                </ul>
-              </li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
-  </script>
-  
-  <script type="text/x-handlebars" id="insight">
-    <h4>Query</h4>
-    
-    <div class="row">
-      {{ view App.EditorView  class="sql-editor" contentBinding="query" }}
-    </div>
-    
-    <div class="row">
-      <div class="pull-right">
-        {{controllers.query.execution_time}}
-        <button class="btn  btn-success " {{action  execute target="controllers.query" }}>Query</button>
-      </div>
-    </div>
-   
-    <div class="row">
-      <div class="pull-left">
-        <i class="icon-download-alt"></i>  
-        Download as: <a {{bindAttr href="controllers.query.url"}}>JSON</a>
-      </div>
-      <div class="pull-right">
-        {{#linkTo 'insight.table' model}}<i class="icon-th-list"></i> Table{{/linkTo}}
-        {{#linkTo 'insight.chart' model}}<i class="icon-signal"></i> Chart{{/linkTo}}
-        {{#linkTo 'insight.spec'  model}}<i class="icon-edit"></i> Edit{{/linkTo}}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class='presentation-container'>
-        {{outlet}}
-      </div>
-    </div>
-  </script>
-
-  <script type="text/x-handlebars" id="insight/table">
-    {{view Ember.Table.TablesContainer }}
-  </script>
-
-  <script type="text/x-handlebars" id="insight/spec">
-   <div class="well">
-    {{ view App.EditorView contentBinding="controllers.insight.model.content" }}
-   </div>
-  </script>
-
-
-  <script type="text/x-handlebars" id="chart">
-  </script>
-
-  <script type="text/x-handlebars" data-template-name="table-header-tree-cell">
-    <span class='column-title' {{action sortByColumn view.column allowedKeys="meta" }}  >
-      {{view.column.headerCellName}}
-    </span>
-  </script>
-
-  {% endraw %}
-
+<a href="https://www.mozilla.org/" id="tabzilla">mozilla</a>
 {% endblock %}
 
 
+
+{% block script %}
+  <script src="//mozorg.cdn.mozilla.net/tabzilla/tabzilla.js"></script>
+  <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
+  <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase-simple-login.js'></script>
+  <script type='text/javascript' src='https://login.persona.org/include.js'></script>
+  <script src="https://towtruck.mozillalabs.com/towtruck.js"></script>
+
+  {% assets "common.js" %}
+  <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+
+  {% assets "app.handlebars" %}
+  <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+
+{% endblock %}

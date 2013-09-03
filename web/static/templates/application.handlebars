@@ -1,0 +1,11 @@
+
+{{#if user.is_anonymous}}
+  {{partial sign_in}}
+{{else}}
+  {{#if user.is_pending}}
+  {{partial welcome}}
+  {{else}}
+  {{partial main}}
+  {{/if}}
+{{/if}}
+

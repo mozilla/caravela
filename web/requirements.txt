@@ -1,4 +1,7 @@
 Flask
+Flask-Assets
+Flask-Script
+
 boto
 celery
 gunicorn

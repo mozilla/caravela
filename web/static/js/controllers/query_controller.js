@@ -1,31 +1,35 @@
 App.QueryController = Ember.Controller.extend({
-  needs: ['insight'],
+  needs: ['application', 'insightTable'],
 
-  queryBinding: "controllers.insight.query",
+  query: "",
+
   execution_time: "0.0s",
   
 
   _schema: Em.ArrayProxy.create({content:[]}),
   _records: Em.ArrayProxy.create({content:[]}),
 
+
   schema: function(){
-    this.execute();
+    this.send('execute');
     return this._schema;
   }.property(),
 
   records: function(){
-    this.execute();
+    this.send('execute');
     return this._records;
   }.property(),
 
 
   url: function(){
+    console.log('query change', query)
     var query =  this.get('query');
+
     if(query){
       return "/query?q=" + query;
     }
      
-  }.property("controllers.insight.model"),
+  }.property("query"),
 
   execute_stmt: function(stmt){
     var self = this;
@@ -40,7 +44,10 @@ App.QueryController = Ember.Controller.extend({
     var array = [];
     self.set('_records.content', []);
 
-    Ember.$.getJSON('/query?q='+stmt, function(json) {
+    var url = '/query?q='+encodeURIComponent(stmt);
+
+
+    Ember.$.getJSON(url, function(json) {
       var schema = json.schema;
       var array = [];
 
@@ -55,6 +62,7 @@ App.QueryController = Ember.Controller.extend({
       self.set('_records.content', array);
 
     }).fail(function(){
+      console.log('arguments', arguments)
       alert('failure');
     }).always(function(){
       clearInterval(timer);
@@ -62,13 +70,18 @@ App.QueryController = Ember.Controller.extend({
 
   },
 
- 
-  execute: _.debounce(function(){
-    var query = this.get('query');
-    if(query){
-      this.execute_stmt(query);
+  update: _.debounce(function(){
+      var query = this.get('query');
+      if(query){
+        this.execute_stmt(query);
+      }
+  },300).observes('query'),
+
+  actions:{
+    execute: function(){
+      this.update();
     }
-  },300).observes('url')
+  }
 
 
 });

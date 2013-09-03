@@ -12,7 +12,7 @@
     {"name":"y", "range":"height", "nice":true, "domain":{"data":"documents", "field":"data.count"}}
   ],
   "axes": [
-    {"type":"x", "scale":"x"},
+    {"type":"x", "scale":"x", "values":[0, 50, 99]},
     {"type":"y", "scale":"y"}
   ],
   "marks": [

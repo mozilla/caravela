@@ -1,0 +1,21 @@
+<h1>Query</h1>
+
+<div class="query">
+<ul>
+  <li>
+  
+  {{ view App.EditorView  class="sql-editor" contentBinding="query" }}
+
+  <div class="btn-group">
+    <a class="btn" {{action execute}}><i class="icon-road"></i>  Query</a>
+    <a class="btn" {{action save}}><i class="icon-hdd"></i> Save</a>
+  </div>
+  <a class="btn" {{action save}}><i class="icon-download-alt"></i> Download</a>
+  </li>
+</ul>
+
+<div class="results">
+{{view Ember.Table.TablesContainer controllerBinding="controllers.insightTable"}}
+</div>
+
+</div>

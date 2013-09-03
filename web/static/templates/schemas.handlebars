@@ -1,0 +1,32 @@
+<h1>Data</h1>
+
+
+<ul class="schema">
+  {{#each controller itemController="schema"}}
+    <li>
+
+      <h2>
+        <i class="icon-th"></i>
+        {{name}}
+        <span class="pull-right">
+         <a {{bindAttr class="showSchema :btn"}} {{action toggleSchema controller}} > Schema</a>
+         <a {{action query this}} class="btn"> <i class="icon-road"></i>  Query</a>
+        </span>
+      </h2>
+
+      <p>Primary collection for caravela, each record represents a web page</p>
+      {{#if showSchema}}
+        <h3>Schema</h3>
+
+        <table>
+        {{#each fields}}<tr>
+        <td class="name">{{name}}</td>
+        <td>{{type}}</td>
+        <td>{{mode}}</td>
+        </tr>{{/each}}
+        </table>
+      {{/if}}
+    </li>
+
+  {{/each}}
+</ul>

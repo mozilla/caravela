@@ -1,5 +1,5 @@
 {
-  "query": "select * from scripts where find(script, 'jquery') >= 0",
+  "query": "select * from scripts where find(script, 'jquery') >= 0 limit 10",
  
   "name": "JQuery Plugin",
   "width": 480,

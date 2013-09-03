@@ -1,7 +1,3 @@
-App.InsightController = Em.ObjectController.extend({
-  needs: "query",
-});
-
 App.Insight = DS.Model.extend({
   content: DS.attr('string'),
   

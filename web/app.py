@@ -10,11 +10,12 @@ from flask import (
   jsonify
 )
 
+from . import assets
 from . import tasks
 
 
 app = Flask(__name__)
-
+assets.init(app)
 
 def sort(iter, col, dir="ASC"):
   if dir == "ASC":
@@ -52,30 +53,29 @@ def index():
   )
 
 
-@app.route('/spec/')
-@app.route('/spec/<path:query>')
-def spec(query='*feature'):
-  """Generate a vega spec file from query"""
-
-  table = dict(
-    name="table",
-    values =  [
-      dict(x=x, y=y) 
-      for x,y in
-      execute(query)
-    ]
+@app.route('/firebase')
+def firebase():
+  return render_template(
+    'firebase.html'
   )
-   
 
-  response =  make_response(render_template(
-    'spec.json', 
-    data = json.dumps([table])
-  ))
-  response.headers['content-type'] = "application/json"
-  return response
+
+@app.route('/schemas')
+def schema():
+  # todo: if it's safe todo so move this transformation
+  # to tasks.py
+  relations = [ 
+    dict(id=name, name=name, fields=schema['fields'])
+    for name, schema in tasks.relations.delay().get()
+  ]
+
+  return jsonify(schemas=relations)
+
+
   
 @app.route('/query')
 def query_endpoint():
+
   q = request.args['q']
 
   results = tasks.query.delay(q).get()
@@ -84,26 +84,7 @@ def query_endpoint():
   return response
 
 
-@app.route('/json')
-def json_endpoint():
 
-  cols = request.args.get('cols','').strip() or "*"
-  order_by = request.args.get('order_by', None)
-
-  limit = int(request.args.get('limit',100))
-  where = request.args.get('where', None)
-
-  results = tasks.execute.delay(
-    cols=cols,
-    limit=limit,
-    order_by=order_by,
-    where = where
-  ).get()
-
-  response = make_response(results)
-  response.headers['content-type'] = "application/json"
-
-  return response
 
 @app.route("/insights")
 def list_insights():

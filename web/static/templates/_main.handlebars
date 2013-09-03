@@ -1,0 +1,77 @@
+<div class="sidebar">
+  <header>
+    
+    {{#linkTo 'index' title="Caravela"}}Caravela{{/linkTo}}
+    <div class="pull-right button-group">
+      <a title="logout" {{action  logout}}>
+        <img class="avatar" {{bindAttr src="user.avatar_url"}} />
+      </a>
+      {{#linkTo 'index' title="Feed"}}<i class="icon-home"></i>{{/linkTo}}
+
+    </div>
+  </header>
+
+  <div class="scroll">
+  <ul>
+    <li><h5>BROWSE</h5></li>
+
+    <li>
+      {{#linkTo 'index'}}<i class="icon-graph"></i> Feed{{/linkTo}}
+    </li>
+
+    <li>
+      {{#linkTo 'schemas'}}<i class="icon-th"></i> Data{{/linkTo}}
+    </li>
+
+    <li>
+      {{#linkTo 'views'}}<i class="icon-eye-open"></i> Views{{/linkTo}}
+    </li>
+
+    <li>
+      {{#linkTo 'functions'}}<i>∑</i> Functions{{/linkTo}}
+    </li>
+  </ul>
+
+  <ul>
+    <li><h5>
+      Your Queries 
+      <a title="Add Query">
+        <i class="icon-plus pull-right"></i>
+      </a>
+    </h5></li>
+    <li>{{#linkTo 'query'}}JQuery Plugins{{/linkTo}}</li>
+    <li>{{#linkTo 'query'}}Content Type Distribution{{/linkTo}}</li>
+    <li>{{#linkTo 'query'}}Popular Ad Networks{{/linkTo}}</li>
+  </ul>
+
+  <ul>
+    <li><h5>
+      Your Insights 
+      <a title="Add Insight" {{action create}}>
+        <i class="icon-plus pull-right"></i>
+      </a>
+    </h5></li>
+
+    {{#each model}}
+      {{#unless isTemp}}
+      <li>
+        {{#linkTo 'insight.chart' this}}{{name}}{{/linkTo}}
+      </li>
+      {{/unless}}
+    {{/each}}
+ 
+  </ul>
+ </div>
+
+  <footer>
+    <ul>
+      <li>About</li>
+      <li><a href="http://github.com/mozilla/caravela"><i class="icon-github"></i></a></li>
+    </ul>
+  </footer>
+
+</div>
+
+<div class="main">
+  {{outlet}}
+</div>
