@@ -4,26 +4,29 @@
 
 <ul>
 {{#each  itemController="insight" }}
-  {{#unless isTemp}}
+
   <li>
-  <img class="avatar" {{bindAttr src="avatar_url"}} />
-
-
-  <div class="visual">
-    <span class="caption">Scott Robertson added</span>
-    <img class="chart" {{bind-attr src="thumbNail"}} />
-
+  <div class="author">
+   <img class="avatar" {{bindAttr src="avatar_url"}} />
+   <span class="caption">{{nickname}} added</span>
+   <span class="time">1h</span>
   </div>
 
-  <a {{action "showInsight" this}}>{{name}}</a>
-  
-  <p>
-    This chart shows all the non-html content within
-    the CommonCrawl Corpus.
-  </p>
+  <span class="visual">
+    <img class="chart" {{bind-attr src="thumbNail"}} />
+  </span>
+
+  <span class="details">
+    <a {{action "showInsight" this}}>{{name}}</a>
+    
+    <p>
+      This chart shows all the non-html content within
+      the CommonCrawl Corpus.
+    </p>
+  </span>
 
   </li>
-  {{/unless}}
+
 {{/each}}
 </ul>
 

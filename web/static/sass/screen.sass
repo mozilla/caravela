@@ -29,7 +29,6 @@ $font-regular: "Open Sans", sans-serif
   color: $foreground
   padding: 4px
   font-family: $font-regular
-  font-fammily: $font-regular
   font-weight: 300
   font-size: 16px
 
@@ -72,14 +71,14 @@ body
 
 
 .sidebar
+  position: absolute
+  top: 0
+  bottom: 0
   width: 240px
   background: $sidebar-background
   color: $sidebar-foreground
   z-index: 1
   overflow: hidden
-  position: fixed
-  top: 0
-  bottom: 0
 
   a
     color: $sidebar-foreground
@@ -93,7 +92,7 @@ body
   header a.logo
     color: $sidebar-foreground
     text-decoration: none
-    font-weight: 300px
+    font-weight: 300
     font-size: 20px
 
 
@@ -107,7 +106,7 @@ body
       vertical-align: top
       line-height: 1
 
-      :last-child
+      &:last-child
         margin-left: 0
 
       i
@@ -189,7 +188,12 @@ body
         color: $sidebar-group-header
 
 .main
-  padding-left: 240px
+  position: absolute
+  top: 0px
+  bottom: 0px
+  left: 240px
+  right: 0px
+  overflow-y: scroll
   h1, h2, h3, h4
     font-weight: 300
     padding-top: 12px
@@ -198,11 +202,11 @@ body
     +border
     color: $main-foreground
     height: 60px
-    line-height: 60px
+    line-height: 120%
     text-indent: 30px
-    font-size: 28px
-    
+    font-size: 24pt
 
+    
 
     i
       font-size: 24px
@@ -226,17 +230,13 @@ body
       padding-top: 8px
     
 
-  ul
-   
+  li
+    +border
+    padding-top: 8px
+    padding-bottom: 8px
+    padding-left: 30px
+    padding-right: 30px
 
-    li
-      +border
-      padding-top: 8px
-      padding-bottom: 18px
-      padding-left: 30px
-      padding-right: 30px
-      min-height: 125px
-      overflow: auto
 
   table
     margin-top: 18px
@@ -256,15 +256,49 @@ body
 
 
 .feed
+  li
+    position: relative
+    padding-top: 30px
+    
+
+  .author
+    position: absolute
+    left: 30px
+    right: 30px
+    top: 20px
+    font-size: 80%
+    z-index: -1
+
+    .time
+      float: right
+      padding-right: 30px
+  
   .avatar
     width: 42px
     height: 42px
     vertical-align: top
+  
+  .details
+    vertical-align: top
+    display: inline-block
+
+  a, p
+    line-height: 145%
+    padding-right: 30px
+  
+  a
+    font-size: 16pt
+    color: $sidebar-background
+    font-weight: normal
+
+    &:hover
+      text-decoration: underline
 
   .visual
     display: inline-block
-    width: 192px
-    height: 120px
+    width: 150px
+    height: 100px
+    padding-left: 60px
     
     .caption
       font-size: 8pt
@@ -375,8 +409,6 @@ body
 
 
 
-.ember-application > .ember-view
-  height: 100%
 
 #tabzilla-panel
   z-index: 100
