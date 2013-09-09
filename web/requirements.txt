@@ -10,5 +10,6 @@ git+https://github.com/trivio/discodb.git
 git+https://github.com/trivio/codd.git
 
 git+https://github.com/trivio/splicer.git
+git+https://github.com/trivio/splicer_arc.git
 git+https://github.com/trivio/splicer_console.git
 git+https://github.com/trivio/splicer_discodb.git

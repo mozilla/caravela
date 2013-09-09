@@ -15,9 +15,15 @@ package "libevent-dev"
 
 package "rabbitmq-server"
 
-ruby_gem "compass"
+gem_package "compass"
 
 directory "/srv/" do
+  action :create
+  owner node[:app][:user]
+  group node[:app][:user]
+end
+
+directory "/var/cache/#{node[:app][:name]}" do
   action :create
   owner node[:app][:user]
   group node[:app][:user]
