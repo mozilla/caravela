@@ -18,16 +18,18 @@ def init(**tables):
   dataset.add_server(DiscoDBServer(**tables))
 
   dataset.add_server(FileServer(
-    arc=dict(
+    common_crawl=dict(
       root_dir=join(dirname(__file__), 'data'),
       pattern="sample.arc.gz",
-      decode="application/x-arc"
+      decode="application/x-arc",
+      #description="Raw documents from http://commoncrawl.org"
     )
   ))
 
 
   dataset.add_server(FileServer(
     top_sites=dict(
+      #description="Top Sites as reported by Alexa",
       root_dir=join(dirname(__file__), 'data'),
       pattern="alexa-top1m-{date}.csv",
       decode="auto",
