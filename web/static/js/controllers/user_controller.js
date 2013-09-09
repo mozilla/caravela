@@ -51,7 +51,7 @@ App.UserController = Em.ObjectController.extend({
               return {
                 'email': usr.email,
                 'nickname': null,
-                'avatar_url': "http://www.gravatar.com/avatar/%@".fmt(
+                'avatar_url': "//www.gravatar.com/avatar/%@".fmt(
                   usr.hash
                 ),
                 'status': 'pending',
