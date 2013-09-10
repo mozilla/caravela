@@ -51,7 +51,7 @@ App.UserController = Em.ObjectController.extend({
               return {
                 'email': usr.email,
                 'nickname': null,
-                'avatar_url': "//www.gravatar.com/avatar/%@".fmt(
+                'avatar_url': "https://www.gravatar.com/avatar/%@".fmt(
                   usr.hash
                 ),
                 'status': 'pending',
@@ -88,7 +88,7 @@ App.UserController = Em.ObjectController.extend({
     
     var url;
     if(this.get('is_anonymous')){
-      url =  "http://www.gravatar.com/avatar/00000000"       
+      url =  "https://www.gravatar.com/avatar/00000000"       
     }else{
       url = this.content.avatar_url;
     }
