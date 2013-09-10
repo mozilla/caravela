@@ -59,6 +59,33 @@ body
   font-family: $font-regular
   font-size: 16px
 
+em
+  font-weight: bold
+
+
+.popover
+  .popover-title
+    font-size: 10pt
+    padding: 2px
+    font-weight: bold
+    background-color: $main-background
+    border-bottom: none
+    padding-left: 9px
+    padding-right: 9px
+    padding-top: 9px
+
+  font-size: 10pt
+  line-height: 140%
+  top: 10px !important
+ 
+  .arrow
+    top: 20px !important
+  
+  .popover-content
+    padding-bottom: 9px
+
+    p
+      padding-bottom: 12px
 
 .avatar
   border-radius: 50%
@@ -159,14 +186,13 @@ body
 
 
   .scroll
+    width: 260px
     position: absolute
     top: 60px
     bottom: 60px
     left: 0px
     right: 0px
-
-    overflow-x: hidden
-    overflow-y: scroll
+    overflow-y: auto
 
 
 
@@ -206,7 +232,8 @@ body
     text-indent: 30px
     font-size: 24pt
 
-    
+    *
+      text-indent: 0px
 
     i
       font-size: 24px
