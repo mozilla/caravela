@@ -1,4 +1,7 @@
 App.IndexController = Ember.ArrayController.extend({
+  sortProperties: ['updated_at'],
+  sortAscending: false,
+
   init:function(){
     this._super();
   
