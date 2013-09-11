@@ -1,6 +1,6 @@
 App.InsightChartRoute = Em.Route.extend({
   model: function(){
-    return this.controllerFor('insight');
+    return this.modelFor("insight");
   },
 
   actions: {

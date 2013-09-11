@@ -87,6 +87,37 @@ em
     p
       padding-bottom: 12px
 
+ul.tabs
+  overflow: visible
+  font-size: 0px
+  margin: 0px 30px 10px 30px
+  padding: 0px
+  border-bottom: 1px solid $main-border-color
+  background-color: $main-background
+
+  li
+    position: relative
+    top: 1px
+    font-size: 12pt
+    border-bottom: 1px solid $main-border-color
+    display: inline-block
+    border-bottom-left-radius: 4px
+    margin-left: -1px
+   
+
+  li.active
+    top: 2px
+    border-bottom: none
+    border-bottom-left-radius: 0px
+    border-bottom-right-radius: 0px
+
+    background-color: $main-background
+    border-top: 1px solid $main-border-color
+    border-left: 1px solid $main-border-color
+    border-right: 1px solid $main-border-color
+    border-top-left-radius: 4px
+    border-top-right-radius: 4px
+
 .avatar
   border-radius: 50%
   -moz-border-radius: 50%
@@ -308,6 +339,7 @@ em
   .details
     vertical-align: top
     display: inline-block
+    max-width: 50%
 
   a, p
     line-height: 145%
@@ -366,7 +398,8 @@ em
     content: "DATA SOURCE"
     background-color: rgba(229, 230, 230, .2)
   
- 
+
+
   //.CodeMirror-scroll
   //  max-height: 200px 
   //.CodeMirror pre { padding-left: 7px; line-height: 1.25; }

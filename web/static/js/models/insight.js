@@ -22,6 +22,11 @@ App.Insight = DS.Model.extend({
     return this.get('spec.name');
   }.property('spec'),
 
+  description: function(){
+    return this.get('spec.description');
+  }.property('spec'),
+
+
   isTemp: function(){
     return this.get('id') == 'temp';
   }.property('id')

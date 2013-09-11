@@ -6,7 +6,7 @@ App.InsightChartController = Em.ObjectController.extend({
     publish: function(){
       var user = this.get('controllers.user');
       var insight = this.get('model').getProperties(
-        'id', 'name'
+        'id', 'name', 'description'
       );
 
       insight['thumbNail'] = this.get('thumbNail');

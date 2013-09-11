@@ -3,9 +3,9 @@ window.App = Ember.Application.create({});
 
 App.Router.map(function(){
   this.resource('insight', { path: ':insight_id' }, function(){
-    this.route('table');
     this.route('chart');
-    this.route('spec');
+    this.route('describe');
+    this.route('comment');
   });
 
   this.route('query');
