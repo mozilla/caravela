@@ -1,6 +1,6 @@
 {
   "query": "select * from scripts where find(script, 'jquery') >= 0 limit 10",
- 
+   "description": "A listing of all scripts with the word jquery in it. I need to create a method to extract the plugin name from the urls.",
   "name": "JQuery Plugin",
   "width": 480,
   "height": 200,

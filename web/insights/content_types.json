@@ -1,5 +1,6 @@
 {
   "name": "Non HTML Content",
+  "description": "This chart shows all the non-html content within the CommonCrawl Corpus.",
   "query": "select content_type, count() from docs where content_type != \"text/html\" group by content_type order by count desc limit 10",
 
   "width": 480,
