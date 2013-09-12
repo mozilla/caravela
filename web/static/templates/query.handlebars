@@ -20,8 +20,10 @@
     <a class="btn" {{action execute}}><i class="icon-road"></i>  Query</a>
     <a class="btn" {{action save}}><i class="icon-hdd"></i> Save</a>
   </div>
-  <a class="btn" {{action save}}><i class="icon-download-alt"></i> Download</a>
+  <a class="btn" {{bind-attr href="url"}}><i class="icon-download-alt"></i> Download</a>
+  <span class="pull-right">{{execution_time}}</span>
   </li>
+
 </ul>
 
 <div class="results">

@@ -1,5 +1,4 @@
-<ul class="insight">
-
+<ul >
   <li class="editor">
     <div class="data-source">
       {{#linkTo 'query'}}{{query}}{{/linkTo}}
@@ -13,7 +12,7 @@
     </div>
 
     {{#linkTo 'query' class="btn"}}<i class="icon-th"></i> Data{{/linkTo}}
-
+    <span class="pull-right">{{execution_time}}</span>
   </li>
   <li class="chart"></li>
 </ul>
