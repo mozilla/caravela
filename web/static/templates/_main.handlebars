@@ -6,7 +6,7 @@
       <a title="logout" {{action  logout}}>
         <img class="avatar" {{bindAttr src="user.avatar_url"}} />
       </a>
-      {{#linkTo 'index' title="Feed"}}<i class="icon-home"></i>{{/linkTo}}
+      {{#linkTo 'index' title="Popular Insights"}}<i class="icon-home"></i>{{/linkTo}}
 
     </div>
   </header>
@@ -16,13 +16,14 @@
     <li><h5>BROWSE</h5></li>
 
     <li>
-      {{#linkTo 'index'}}<i class="icon-graph"></i> Feed{{/linkTo}}
+      {{#linkTo 'index'}}<i class="icon-graph"></i> Popular Insights{{/linkTo}}
     </li>
 
     <li>
       {{#linkTo 'schemas'}}<i class="icon-th"></i> Data{{/linkTo}}
     </li>
 
+<!--
     <li>
       {{#linkTo 'views'}}<i class="icon-eye-open"></i> Views{{/linkTo}}
     </li>
@@ -30,6 +31,7 @@
     <li>
       {{#linkTo 'functions'}}<i>∑</i> Functions{{/linkTo}}
     </li>
+-->
   </ul>
 
   <ul>
