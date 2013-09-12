@@ -1,6 +1,6 @@
 App.reopen({
   EditorView: Em.View.extend({
-    classNames: ["Editor"],
+    classNames: ["editor"],
     
     content: "",
     mode: {name: "javascript", json: true},
