@@ -53,12 +53,6 @@ def index():
   )
 
 
-@app.route('/firebase')
-def firebase():
-  return render_template(
-    'firebase.html'
-  )
-
 
 @app.route('/schemas')
 def schema():
