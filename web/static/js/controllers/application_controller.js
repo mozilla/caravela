@@ -1,8 +1,12 @@
 App.ApplicationController = Ember.ArrayController.extend({
-  needs: ["insight", "user"],
+  needs: ["insight", "user", "queries"],
+
+  queriesBinding: "controllers.queries",
+
   user: function(){
     return this.get('controllers.user');
   }.property(),
+  
   login: function(){
     this.get('user').login();
   },

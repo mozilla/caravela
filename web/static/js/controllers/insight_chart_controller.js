@@ -1,8 +1,9 @@
 App.InsightChartController = Em.ObjectController.extend({
-  needs: ['insight', 'query', 'user'],
+  needs: ['insight',  'user',  'query'],
   thumbNail: '',
 
   execution_timeBinding: "controllers.query.execution_time",
+
   actions:{
     publish: function(){
       var user = this.get('controllers.user');

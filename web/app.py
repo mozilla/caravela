@@ -77,15 +77,42 @@ def query_endpoint():
   response.headers['content-type'] = "application/json"
   return response
 
+def query_from(insight):
+  statement = json.loads(insight['content'])['query']
+  return dict(
+    id=insight['id'],
+    name=insight['id'],
+    statement=statement,
+    insight=insight['id']
+  )
 
+def sideload(records):
+  insights = []
+  queries = []
 
+  for insight in records:
+    insight['query'] = insight['id']
+    insights.append(insight)
+    queries.append(query_from(insight))
+
+  return dict(
+    insights=insights,
+    queries=queries
+  )
 
 @app.route("/insights")
 def list_insights():
-  return jsonify(insights=list(insights.all()))
+  #return jsonify(insights=list(insights.all()))
+  res = sideload(insights.all())
+
+  return jsonify(**res)
 
 @app.route("/insights/<id>")
 def get_insight(id):
-  return jsonify(insight=insights.get(id))
+  insight = insights.get(id)
+  return jsonify(
+    insight=insight,
+    query=query_from(insight)
+  )
 
 from . import insights

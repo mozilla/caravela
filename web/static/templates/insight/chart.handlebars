@@ -1,7 +1,8 @@
 <ul >
   <li class="editor">
+
     <div class="data-source">
-      {{#linkTo 'query'}}{{query}}{{/linkTo}}
+      {{#linkTo 'query' query}}{{statement}}{{/linkTo}}
     </div>
     
     {{ view App.EditorView contentBinding="model.content" }}
@@ -11,7 +12,7 @@
       <a class="btn" {{action publish}}><i class="icon-bullhorn"></i> Publish</a>
     </div>
 
-    {{#linkTo 'query' class="btn"}}<i class="icon-th"></i> Data{{/linkTo}}
+    {{#linkTo 'query' query class="btn"}}<i class="icon-th"></i> Data{{/linkTo}}
     <span class="pull-right">{{execution_time}}</span>
   </li>
   <li class="chart"></li>

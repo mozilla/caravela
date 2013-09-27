@@ -1,37 +1,30 @@
-App.QueryController = Ember.Controller.extend({
+App.QueryController = Ember.ObjectController.extend({
   needs: ['application', 'insightTable'],
 
   query: "",
 
   execution_time: "0.0s",
-  
 
-  _schema: Em.ArrayProxy.create({content:[]}),
-  _records: Em.ArrayProxy.create({content:[]}),
+  schema: Em.ArrayProxy.create({content:[]}),
+  records: Em.ArrayProxy.create({content:[]}),
 
 
-  schema: function(){
-    this.send('execute');
-    return this._schema;
-  }.property(),
+  saveDisabled: Ember.computed.not('isDirty'),
 
-  records: function(){
-    this.send('execute');
-    return this._records;
-  }.property(),
 
 
   url: function(){
-    console.log('query change', query)
-    var query =  this.get('query');
+    var query =  this.get('statement');
 
     if(query){
       return "/query?q=" + query;
     }
      
-  }.property("query"),
+  }.property("statement"),
 
   execute_stmt: function(stmt){
+    console.log('execute stmt');
+
     var self = this;
     var start = new Date().getTime();
     var self = this;
@@ -42,24 +35,25 @@ App.QueryController = Ember.Controller.extend({
     }, 50);
     
     var array = [];
-    self.set('_records.content', []);
+
 
     var url = '/query?q='+encodeURIComponent(stmt);
 
+    console.log('clearing')
+    this.get('records').clear();
+    this.get('schema').clear();
 
     Ember.$.getJSON(url, function(json) {
       var schema = json.schema;
-      var array = [];
-
-      self.set('_schema.content', schema);
+      var records = self.get('records');
+      self.get('schema').addObjects(schema);
       
       json.records.forEach(function(record,i){
         var o = _.object(schema, record);
 
-        array.push(Em.Object.create(o));          
+        records.addObject(Em.Object.create(o));
+        //records.addObject(o)        
       });
-
-      self.set('_records.content', array);
 
     }).fail(function(){
       console.log('arguments', arguments)
@@ -71,15 +65,47 @@ App.QueryController = Ember.Controller.extend({
   },
 
   update: _.debounce(function(){
-      var query = this.get('query');
-      if(query){
-        this.execute_stmt(query);
-      }
-  },300).observes('query'),
+    console.log('update called');
+    var query = this.get('statement');
+    if(query){
+      this.execute_stmt(query);
+    }
+  },300).observes('model'),
+
 
   actions:{
     execute: function(){
+      console.log('execute called');
+
       this.update();
+    },
+    save: function(){
+      this.get('model').save();
+    }
+  }
+
+
+});
+
+App.QueriesNewController = App.QueryController.extend({
+  needs: ['insightTable'],
+  name: null,
+  statement: "",
+
+  canSave: function(){
+    return  Boolean(this.get('name') && this.get('statement'));
+  }.property('name', 'statement'),
+
+
+  actions:{
+    save: function(){
+      var query = this.get('store').createRecord(
+        'query',
+        this.getProperties('name', 'statement')
+      );
+      query.save();
+      this.transitionToRoute('query', query);
+
     }
   }
 

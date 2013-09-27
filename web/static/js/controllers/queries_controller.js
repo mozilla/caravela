@@ -1,0 +1,1 @@
+App.QueriesController = Ember.ArrayController.extend({});

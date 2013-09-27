@@ -37,13 +37,16 @@
   <ul>
     <li><h5>
       Your Queries 
-      <a title="Add Query">
-        <i class="icon-plus pull-right"></i>
-      </a>
+      {{#linkTo 'queries.new' title="Add Query" class="pull-right"}}
+        <i class="icon-plus"></i>
+      {{/linkTo}}
     </h5></li>
-    <li>{{#linkTo 'query'}}JQuery Plugins{{/linkTo}}</li>
-    <li>{{#linkTo 'query'}}Content Type Distribution{{/linkTo}}</li>
-    <li>{{#linkTo 'query'}}Popular Ad Networks{{/linkTo}}</li>
+    {{#each queries}}
+      <li>
+        {{#linkTo 'query' this}}{{#if isDirty}}*{{/if}} {{name}}{{/linkTo}}
+      </li>
+    {{/each}}
+
   </ul>
 
   <ul>
@@ -57,6 +60,7 @@
     {{#each model}}
       {{#unless isTemp}}
       <li>
+
         {{#linkTo 'insight.chart' this}}{{name}}{{/linkTo}}
       </li>
       {{/unless}}

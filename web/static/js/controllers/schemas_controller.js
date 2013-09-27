@@ -1,5 +1,5 @@
 App.SchemasController = Ember.ArrayController.extend({
-  needs: ['query'],
+  //needs: ['query'],
 
   actions:{
     toggleSchema: function(schema){

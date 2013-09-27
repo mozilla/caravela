@@ -1,5 +1,5 @@
 <h1>
-  Query
+  Query: {{input value=name}}
   {{
     info-hotspot 
     body="
@@ -14,13 +14,17 @@
 <ul>
   <li>
   
-  {{ view App.EditorView  class="sql-editor" contentBinding="query" }}
+  {{ view App.EditorView  class="sql-editor" contentBinding="statement" }}
 
   <div class="btn-group">
     <a class="btn" {{action execute}}><i class="icon-road"></i>  Query</a>
-    <a class="btn" {{action save}}><i class="icon-hdd"></i> Save</a>
+    <button class="btn" {{action save}} {{bind-attr disabled="saveDisabled"}}><i class="icon-hdd"></i> Save</button>
   </div>
+
+  {{#linkTo 'insight.chart' insight class="btn"}}<i class="icon-picture"></i> Visualize{{/linkTo}}
+
   <a class="btn" {{bind-attr href="url"}}><i class="icon-download-alt"></i> Download</a>
+
   <span class="pull-right">{{execution_time}}</span>
   </li>
 

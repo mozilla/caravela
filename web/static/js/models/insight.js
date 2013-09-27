@@ -1,6 +1,8 @@
 App.Insight = DS.Model.extend({
   content: DS.attr('string'),
   
+  query:  DS.belongsTo('query'),
+
   spec: function(){
     var spec;
     try{
@@ -12,7 +14,7 @@ App.Insight = DS.Model.extend({
     return spec;
   }.property('content'),
 
-  query: function(){
+  statement: function(){
     var q = this.get('spec.query') || '';
     return q;
   }.property('spec'),
@@ -39,4 +41,4 @@ App.Insight.FIXTURES = [{
 },{
   id: 2,
   name: "Size Histogram"
-}]
+}];

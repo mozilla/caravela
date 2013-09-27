@@ -1,0 +1,56 @@
+
+html{
+height: 100%;
+width: 100%;
+font-size: 16px;
+}
+
+body{
+  margin: 0px;
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
+section {
+  padding-top: 30px;
+}
+
+.sidebar-nav {
+  padding: 9px 0;
+}
+
+@media (max-width: 980px) {
+  /* Enable use of floated navbar text */
+  .navbar-text.pull-right {
+    float: none;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+
+.table td.number {
+   text-align: right;
+}
+td{
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+
+.sql-editor .CodeMirror { height: 5em; border: 1px solid #ddd; }
+.sql-editor .CodeMirror-scroll { max-height: 200px; }
+.sql-editor .CodeMirror pre { padding-left: 7px; line-height: 1.25; }
+.sql-editor { padding-bottom: 10px;}
+
+#login{
+margin-top: 8px;
+margin-bottom: 8px;
+padding-top: 0px;
+padding-bottom: 0px;
+}
+
+
+

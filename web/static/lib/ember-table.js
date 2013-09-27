@@ -1,4 +1,4 @@
-/*! ember-table 2013-09-06 */
+/*! ember-table 2013-09-26 */
 !function(e, t, n) {
     function i(n, s) {
         if (!t[n]) {
@@ -22,6 +22,8 @@
     return i;
 }({
     1: [ function(require) {
+        var _ref;
+        Ember.Table = Ember.Namespace.create(), Ember.Table.VERSION = "0.0.2", null != (_ref = Ember.libraries) && _ref.register("Ember Table", Ember.Table.VERSION), 
         require("./utils/jquery_fix"), require("./utils/scrollbar_width_helper"), require("./utils/resize_handler"), 
         require("./utils/style_bindings"), require("./utils/lazy_container_view"), require("./utils/utils"), 
         require("./controllers"), require("./row_selection_mixin"), require("./views"), 
@@ -370,32 +372,6 @@ jQuery.browser shim that makes HT working with jQuery 1.8+
             res = jQuery.browser = browser;
         }();
     }, {} ],
-    4: [ function() {
-        !function($) {
-            return $.getScrollbarWidth = function() {
-                var $div, $textarea1, $textarea2, scrollbarWidth;
-                return scrollbarWidth = 0, scrollbarWidth || ($.browser.msie ? ($textarea1 = $('<textarea cols="10" rows="2"></textarea>').css({
-                    position: "absolute",
-                    top: -1e3,
-                    left: -1e3
-                }).appendTo("body"), $textarea2 = $('<textarea cols="10" rows="2" style="overflow: hidden;"></textarea>').css({
-                    position: "absolute",
-                    top: -1e3,
-                    left: -1e3
-                }).appendTo("body"), scrollbarWidth = $textarea1.width() - $textarea2.width(), $textarea1.add($textarea2).remove()) : ($div = $("<div />").css({
-                    width: 100,
-                    height: 100,
-                    overflow: "auto",
-                    position: "absolute",
-                    top: -1e3,
-                    left: -1e3
-                }).prependTo("body").append("<div />").find("div").css({
-                    width: "100%",
-                    height: 200
-                }), scrollbarWidth = 100 - $div.width(), $div.parent().remove())), scrollbarWidth;
-            }, $.getScrollbarWidth;
-        }(jQuery);
-    }, {} ],
     5: [ function() {
         var debounce;
         Ember.ResizeHandler = Ember.Mixin.create({
@@ -433,6 +409,32 @@ jQuery.browser shim that makes HT working with jQuery 1.8+
                 callNow && (result = func.apply(context, args)), result;
             };
         };
+    }, {} ],
+    4: [ function() {
+        !function($) {
+            return $.getScrollbarWidth = function() {
+                var $div, $textarea1, $textarea2, scrollbarWidth;
+                return scrollbarWidth = 0, scrollbarWidth || ($.browser.msie ? ($textarea1 = $('<textarea cols="10" rows="2"></textarea>').css({
+                    position: "absolute",
+                    top: -1e3,
+                    left: -1e3
+                }).appendTo("body"), $textarea2 = $('<textarea cols="10" rows="2" style="overflow: hidden;"></textarea>').css({
+                    position: "absolute",
+                    top: -1e3,
+                    left: -1e3
+                }).appendTo("body"), scrollbarWidth = $textarea1.width() - $textarea2.width(), $textarea1.add($textarea2).remove()) : ($div = $("<div />").css({
+                    width: 100,
+                    height: 100,
+                    overflow: "auto",
+                    position: "absolute",
+                    top: -1e3,
+                    left: -1e3
+                }).prependTo("body").append("<div />").find("div").css({
+                    width: "100%",
+                    height: 200
+                }), scrollbarWidth = 100 - $div.width(), $div.parent().remove())), scrollbarWidth;
+            }, $.getScrollbarWidth;
+        }(jQuery);
     }, {} ],
     6: [ function() {
         Ember.StyleBindingsMixin = Ember.Mixin.create({
@@ -473,7 +475,9 @@ jQuery.browser shim that makes HT working with jQuery 1.8+
             scrollTop: null,
             startIndex: null,
             init: function() {
-                return this._super(), this.onNumChildViewsDidChange();
+                return this._super(), Ember.run.next(this, function() {
+                    return this.onNumChildViewsDidChange();
+                });
             },
             height: Ember.computed(function() {
                 return this.get("content.length") * this.get("rowHeight");
@@ -582,7 +586,7 @@ jQuery.browser shim that makes HT working with jQuery 1.8+
         });
     }, {} ],
     9: [ function() {
-        Ember.Table = Ember.Namespace.create(), /**
+        /**
  * Column Definition
  * @class
  * @alias Ember.Table.ColumnDefinition
@@ -803,7 +807,9 @@ jQuery.browser shim that makes HT working with jQuery 1.8+
                 col.set("_nextColumn", columns.objectAt(i + 1)), _results.push(col.set("controller", this));
                 return _results;
             }, "tableColumns.@each", "tableColumns"),
-            sortByColumn: Ember.K,
+            actions: {
+                sortByColumn: Ember.K
+            },
             _tableScrollTop: 0,
             _tableScrollLeft: 0,
             _width: null,

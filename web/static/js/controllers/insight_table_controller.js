@@ -2,24 +2,28 @@ App.InsightTableController = Ember.Table.TableController.extend({
   hasHeader: true,
   hasFooter: false,
   numFixedColumns: 0,
+  //headerHeight: 30,
   rowHeight: 30,
 
   needs: ["query"],
 
   columns: function(){
+
     var schema = this.get("controllers.query.schema");//Em.get("App.query.schema");
     // TODO/BUG: this method fires off after sorting is complete
     // which resets the state of sortAscending back to true which
     if (!schema){
+      console.log('columns!!!!!, no schema')
       return [];
     }else{
+      console.log('columns!!!!!,with schema')
       return  schema.map(function(name,index){
         return Ember.Table.ColumnDefinition.create({
           columnWidth: 220,
           headerCellName: name,
-          //contentPath: name,
+          contentPath: name,
 
-          getCellContent: function(row){return row[name]},
+          //getCellContent: function(row){return row[name]},
           sortAscending: true,
           headerCellViewClass: 'App.HeaderTreeCell'
         });
@@ -29,14 +33,7 @@ App.InsightTableController = Ember.Table.TableController.extend({
   }.property("controllers.query.schema.@each"),
 
 
-  // TODO: figure out why we can't bind the table controller
-  // directly to to array controller with a binding such as
-  // contentBinding:  Ember.Binding.oneWay("App.query"),
-  content: function(k,v){
-    var records = this.get("controllers.query.records");
-    return records;
-  }.property("controllers.query.records.@each"),
-
+  content: Em.computed.alias("controllers.query.records"),
 
   sortByColumn: function(column){
     column.toggleProperty('sortAscending');
