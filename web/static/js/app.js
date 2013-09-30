@@ -34,6 +34,7 @@ App.ObjectTransform = DS.Transform.extend({
 App.FirebaseAdapter =  DS.Adapter.extend({
   baseRef: "https://caravela.firebaseio.com/",
 
+
   emptyPromise: function(result){
     // resolve immediatly we'll update the store
     // via push as the records come in
@@ -45,6 +46,7 @@ App.FirebaseAdapter =  DS.Adapter.extend({
   },
 
   refForType: function(type){
+    console.log(type)
     return new Firebase(this.get('baseRef')).child(
       Em.String.pluralize(type.typeKey)
     );
@@ -61,9 +63,10 @@ App.FirebaseAdapter =  DS.Adapter.extend({
       var childRef = ref.push(
         data
       );
-      record.id = childRef.name();
-
-      resolve(record);
+      data.id = childRef.name();
+      
+      console.log("adding", type.typeKey, data)
+      resolve(data);
 
 
     });
@@ -93,23 +96,28 @@ App.FirebaseAdapter =  DS.Adapter.extend({
   },
 
   find: function(store, type, id){
-    console.log(arguments)
     return this.emptyPromise({'id': id});
   },
 
   findAll: function(store, type){
-    console.log('finding')
     var ref = new Firebase(this.get('baseRef')).child(
       Em.String.pluralize(type.typeKey)
     );
    
     var controller = this;
-    console.log('finding all', ref.toString())
+
     ref.on('child_added', function(snapshot){
       var record = snapshot.val();
       record.id = snapshot.name();
-      console.log('adding', record)
-      store.push(type, record);
+
+      // schedule in next loop so that if this was called because
+      // of createRecord we preform an update rather than a creating
+      // a duplicate.
+      Em.run.next(null, function(){
+        store.push(type, record);
+      });        
+
+
     });
 
     /*
