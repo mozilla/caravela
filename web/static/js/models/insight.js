@@ -25,7 +25,7 @@ App.Insight = DS.Model.extend({
   }.property('spec'),
 
   description: function(){
-    return this.get('spec.description');
+    return this.get('spec.description') || '';
   }.property('spec'),
 
 
@@ -35,10 +35,32 @@ App.Insight = DS.Model.extend({
 
 });
 
-App.Insight.FIXTURES = [{
-  id: 1,
-  name: "Google Analytics"
-},{
-  id: 2,
-  name: "Size Histogram"
-}];
+
+App.InsightAdapter = App.FirebaseAdapter.extend({
+  refForType: function(type){
+    var user_id = App.__container__.lookup('controller:user').get('id');
+    return new Firebase(this.get('baseRef')).child(
+      "users/%@/%@".fmt(
+        user_id,
+        Em.String.pluralize(type.typeKey)
+      ) 
+    );
+  }
+});
+
+App.initializer({
+  name: "loadInsight",
+  initialize: function(container) {
+
+    Ember.$.getJSON("/insights/temp", function(json) {
+      var store = container.lookup('store:main');
+      store.push('insight', json.insight);
+
+    });
+  }
+});
+
+
+
+
+

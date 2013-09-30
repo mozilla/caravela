@@ -121,6 +121,15 @@ App.UserController = Em.ObjectController.extend({
       this.get('userRef').update({'nickname': this.get('nickname')});
       this.set('record_state','Saved');
     }
-  }
+  },
+
+  insights: function(key, value){
+    return this.get('store').find('insight');
+  }.property('content'),
+
+  queries: function(key, value){
+    return this.get('store').find('query');
+  }.property('content')
+
 
 });

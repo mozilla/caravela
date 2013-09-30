@@ -46,7 +46,6 @@ App.FirebaseAdapter =  DS.Adapter.extend({
   },
 
   refForType: function(type){
-    console.log(type)
     return new Firebase(this.get('baseRef')).child(
       Em.String.pluralize(type.typeKey)
     );
@@ -100,12 +99,9 @@ App.FirebaseAdapter =  DS.Adapter.extend({
   },
 
   findAll: function(store, type){
-    var ref = new Firebase(this.get('baseRef')).child(
-      Em.String.pluralize(type.typeKey)
-    );
-   
-    var controller = this;
+    var ref = this.refForType(type);
 
+    var controller = this;
     ref.on('child_added', function(snapshot){
       var record = snapshot.val();
       record.id = snapshot.name();

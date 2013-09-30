@@ -57,10 +57,9 @@
       </a>
     </h5></li>
 
-    {{#each model}}
+    {{#each insights}}
       {{#unless isTemp}}
       <li>
-
         {{#linkTo 'insight.chart' this}}{{name}}{{/linkTo}}
       </li>
       {{/unless}}
