@@ -6,7 +6,11 @@ App.ApplicationRoute = Em.Route.extend({
       this.get('store').find('query')
     );
 
+  },
 
-    return this.get('store').find('insight');
+  actions:{
+    error: function(){
+      alert('app error')
+    }
   }
 });
