@@ -18,6 +18,9 @@ App.QueryController = Ember.Table.TableController.extend({
 
   saveDisabled: Ember.computed.not('isDirty'),
 
+  visualizeDisabled: Em.computed.none('insight'),
+
+
   //bodyContent: Em.computed.alias("records"),
 
   bodyContent:  function(){
@@ -39,10 +42,8 @@ App.QueryController = Ember.Table.TableController.extend({
     // TODO/BUG: this method fires off after sorting is complete
     // which resets the state of sortAscending back to true which
     if (!schema){
-      console.log('columns!!!!!, no schema')
       return [];
     }else{
-      console.log('columns!!!!!,with schema')
       return  schema.map(function(name,index){
         return Ember.Table.ColumnDefinition.create({
           columnWidth: 220,
@@ -72,13 +73,18 @@ App.QueryController = Ember.Table.TableController.extend({
   }.property("statement"),
 
   execute_stmt: function(stmt){
-    console.log('execute stmt');
-
     var self = this;
     var start = new Date().getTime();
     var self = this;
+
+    if (self.timer){
+      clearInterval(self.timer);
+    }
     self.set('execution_time', '0.0s');
-    var timer = setInterval(function(){
+
+
+    var timer;
+    timer = self.timer = setInterval(function(){
       var elapsed = (new Date().getTime() - start) / 1000;
        self.set('execution_time', elapsed.toFixed(1) + 's');
     }, 50);
@@ -88,7 +94,6 @@ App.QueryController = Ember.Table.TableController.extend({
 
     var url = '/query?q='+encodeURIComponent(stmt);
 
-    console.log('clearing')
     this.get('records').clear();
     this.get('schema').clear();
 
@@ -105,7 +110,6 @@ App.QueryController = Ember.Table.TableController.extend({
       });
 
     }).fail(function(){
-      console.log('arguments', arguments)
       alert('failure');
     }).always(function(){
       clearInterval(timer);
@@ -114,7 +118,6 @@ App.QueryController = Ember.Table.TableController.extend({
   },
 
   update: _.debounce(function(){
-    console.log('update called');
     var query = this.get('statement');
     if(query){
       this.execute_stmt(query);
@@ -124,12 +127,14 @@ App.QueryController = Ember.Table.TableController.extend({
 
   actions:{
     execute: function(){
-      console.log('execute called');
-
       this.update();
     },
     save: function(){
       this.get('model').save();
+    },
+    visualize: function(){
+      this.transitionToRoute('insight.chart', this.get('insight'));
+
     }
   }
 
@@ -148,23 +153,54 @@ App.QueriesNewController = App.QueryController.extend({
   schema: Em.ArrayProxy.create({content:[]}),
   records: Em.ArrayProxy.create({content:[]}),
 
-  insight: function(){
-    return this.get('store').find('insight','temp');
-  }.property(),
-
-  canSave: function(){
-    return  Boolean(this.get('name') && this.get('statement'));
+  saveDisabled:  function(){
+    return  !Boolean(this.get('name') && this.get('statement'));
   }.property('name', 'statement'),
 
+  visualizeDisabled: Em.computed.alias('saveDisabled'),
+
+  newQuery:function(){
+    var query = this.get('store').createRecord(
+      'query',
+      this.getProperties('name', 'statement')
+    );
+    return query.save();
+  },
 
   actions:{
     save: function(){
-      var query = this.get('store').createRecord(
-        'query',
-        this.getProperties('name', 'statement')
-      );
-      query.save();
-      this.transitionToRoute('query', query);
+      this.transitionToRoute('query', this.newQuery());
+    },
+
+    visualize: function(){
+      var store = this.get('store'),
+        self = this,
+        statement =  this.get('statement');
+
+      var query = this.newQuery();
+      var temp  = store.find('insight','temp');
+
+      Ember.RSVP.all([query, temp]).then(function(records){
+        query = records[0],
+        temp = records[1];
+
+        var spec = temp.get('spec') || {};
+        spec.query = statement;
+        spec.name = '%@ Visual'.fmt(query.get('name'));
+
+        var insight =  store.createRecord('insight', {
+          name: spec.name, 
+          content:JSON.stringify(spec, null, "  "),
+          query:query
+        });
+
+        return insight.save().then(function(){
+          query.set('insight', insight);
+          query.save();
+          self.transitionToRoute('insight.chart', insight);
+        });
+
+      }) 
 
     }
   }

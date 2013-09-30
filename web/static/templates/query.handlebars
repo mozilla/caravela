@@ -21,7 +21,9 @@
     <button class="btn" {{action save}} {{bind-attr disabled="saveDisabled"}}><i class="icon-hdd"></i> Save</button>
   </div>
 
-  {{#linkTo 'insight.chart' insight class="btn"}}<i class="icon-picture"></i> Visualize{{/linkTo}}
+  <button class="btn" {{action visualize}} {{bind-attr disabled="visualizeDisabled"}}>
+    <i class="icon-picture"></i> Visualize
+  </button>
 
   <a class="btn" {{bind-attr href="url"}}><i class="icon-download-alt"></i> Download</a>
 
