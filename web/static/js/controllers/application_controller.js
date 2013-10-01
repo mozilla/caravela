@@ -6,16 +6,6 @@ App.ApplicationController = Ember.ArrayController.extend({
 
   user: function(){
     return this.get('controllers.user');
-  }.property(),
-  
-  login: function(){
-    this.get('user').login();
-  },
-  logout: function(){
-    this.get('user').logout();
-  },
+  }.property()
 
-  create: function(){
-    alert('creating')
-  }
 });

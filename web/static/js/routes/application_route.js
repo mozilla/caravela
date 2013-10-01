@@ -1,6 +1,5 @@
 App.ApplicationRoute = Em.Route.extend({
-  model: function(){
-    
+  model: function(){    
     this.controllerFor('queries').set(
       'content',
       this.get('store').find('query')
@@ -9,8 +8,17 @@ App.ApplicationRoute = Em.Route.extend({
   },
 
   actions:{
-    error: function(){
-      alert('app error')
+    error: function(error, transition){
+      console.error(error.toString());
+    },
+
+    login: function(){
+      this.controllerFor('user').login();
+    },
+    
+    logout: function(){
+      this.controllerFor('user').logout();
     }
+
   }
 });
