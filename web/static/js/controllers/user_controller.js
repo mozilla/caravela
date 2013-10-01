@@ -40,8 +40,9 @@ App.UserController = Em.ObjectController.extend({
         this.set('content', null);
         this.set('userRef', null);
       }else{
+
         var baseRef = this.get('baseRef'), 
-            userRef = baseRef.child('users/'+usr.hash),
+            userRef = baseRef.child('users/'+usr.md5_hash),
             self=this;
 
         this.set('userRef', userRef);
