@@ -12,9 +12,16 @@ App.InsightChartController = Em.ObjectController.extend({
       );
 
       insight['thumbNail'] = this.get('thumbNail');
+      insight['insight'] = this.get('model').serialize();
+      insight['query'] = this.get('model.query').serialize();
+
+
+      this.get('model').save();
       user.publishInsight(insight);
  
     },
-    save: function(){}
+    save: function(){
+      this.get('model').save();
+    }
   }
 });
