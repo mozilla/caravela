@@ -63,7 +63,7 @@ App.FirebaseAdapter =  DS.Adapter.extend({
         data
       );
       data.id = childRef.name();
-      
+      data.url = childRef.toString();
       console.log("adding", type.typeKey, data)
       resolve(data);
 
@@ -76,7 +76,8 @@ App.FirebaseAdapter =  DS.Adapter.extend({
     var serializer = store.serializerFor(type.typeKey);
     var data = serializer.serialize(record, { includeId: true });
     
-    var ref = this.refForType(type).child(data.id);   
+    var ref = this.refForType(type).child(data.id);
+
     return new Ember.RSVP.Promise(function(resolve,reject) {
 
       ref.set(
@@ -105,6 +106,7 @@ App.FirebaseAdapter =  DS.Adapter.extend({
     ref.on('child_added', function(snapshot){
       var record = snapshot.val();
       record.id = snapshot.name();
+      record.url = snapshot.ref().toString();
 
       // schedule in next loop so that if this was called because
       // of createRecord we preform an update rather than a creating
@@ -116,15 +118,19 @@ App.FirebaseAdapter =  DS.Adapter.extend({
 
     });
 
-    /*
+    
     ref.on('child_removed', function(snapshot){
-      controller.removeItem(snapshot.name());
+
+      var id = snapshot.name();
+      var record = store.recordForId(type, id);
+      record.unloadRecord();
     });
-    */
+    
 
     ref.on('child_changed', function(snapshot){
       var record = snapshot.val();
       record.id = snapshot.name();
+      record.url = snapshot.ref().toString();
       store.push(type, record);
 
     });
@@ -133,6 +139,7 @@ App.FirebaseAdapter =  DS.Adapter.extend({
     return this.emptyPromise();
 
   }
+  
 });
 
 
