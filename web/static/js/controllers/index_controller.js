@@ -1,45 +1,43 @@
 App.IndexController = Ember.ArrayController.extend({
+  needs: 'user',
+  user: Em.computed.alias('controllers.user.content'),
   sortProperties: ['updated_at'],
   sortAscending: false,
-
-  init:function(){
-    this._super();
   
-    var feedRef = new Firebase('https://caravela.firebaseio.com/feed')
-                  .endAt()
-                  .limit(10);
-   
-    var controller = this;
-
-    feedRef.on('child_added', function(snapshot){
-      var insight = snapshot.val();
-      controller.addObject(snapshot.val());
-    });
-
-    feedRef.on('child_removed', function(snapshot){
-      controller.removeItem(snapshot.name());
-    });
-
-    feedRef.on('child_changed', function(snapshot){
-      controller.updateItem(snapshot.val());
-    });
-
-  },
-
-  removeItem: function(id){
-    var obj = this.findProperty("id", id);
-    this.removeObject(obj);
-  },
-
-  updateItem: function(updates){
-    var item = this.findProperty("id", updates.id);
-    this.removeObject(item);
-    this.addObject(updates);
-  },
-
   actions: {
     showInsight: function(pub_insight){
-      var insight = this.get('store').find('insight',pub_insight.id);
+      var insight,
+          store = this.get('store');
+
+      if(this.get('user.id') == pub_insight.get('user_id')){
+        insight = store.find('insight',pub_insight.id);        
+      }else{
+        var insight = Em.Object.create(pub_insight.get('insight'));
+        var query = Em.Object.create(pub_insight.get('query'));
+
+
+        insight.setProperties({
+          'query':query,
+          'name': pub_insight.get('name'),
+          'description': pub_insight.get('description'),
+          'spec': JSON.parse(insight.get('content'))
+        });
+        
+        query.set('insight', insight);
+
+        /*
+        insight = store.createRecord('insight', rec);
+        rec = pub_insight.get('query');
+        delete rec['insight'];
+        query = store.createRecord('query', rec);
+
+        // Ember Data docs claim inverse shouldn't need to be 
+        // set, but I encoutre bugs if I do not
+        insight.set('query', query);
+        query.set('insight', insight)
+        */
+      }
+ 
       this.transitionToRoute('insight.chart', insight);
     }
   }
