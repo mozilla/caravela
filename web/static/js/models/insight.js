@@ -1,6 +1,6 @@
 App.Insight = DS.Model.extend({
   content: DS.attr('string'),
-  
+  url: DS.attr('string'),
   query:  DS.belongsTo('query'),
 
   spec: function(){
