@@ -8,6 +8,12 @@ App.Router.map(function(){
     this.route('comment');
   });
 
+  this.resource('public', { path: 'public/:public_insight_id' }, function(){
+    this.route('chart');
+    this.route('query');
+    this.route('describe');
+  });
+
   this.resource('queries', { path: '/query' }, function(){
     this.route('new');
     this.resource('query', { path: ':query_id' });
@@ -75,7 +81,7 @@ App.FirebaseAdapter =  DS.Adapter.extend({
   updateRecord: function(store, type, record){
     var serializer = store.serializerFor(type.typeKey);
     var data = serializer.serialize(record, { includeId: true });
-    
+
     var ref = this.refForType(type).child(data.id);
 
     return new Ember.RSVP.Promise(function(resolve,reject) {
@@ -96,12 +102,21 @@ App.FirebaseAdapter =  DS.Adapter.extend({
   },
 
   find: function(store, type, id){
-    return this.emptyPromise({'id': id});
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      var ref = this.refForType(type);
+      ref.child(id).once('value', function(snapshot){
+        var record = snapshot.val() || {id:id};
+        resolve(record);
+      })
+
+    }.bind(this))
+
   },
 
   findAll: function(store, type){
     var ref = this.refForType(type);
-
+    var serializer = store.serializerFor(type);
     var controller = this;
     ref.on('child_added', function(snapshot){
       var record = snapshot.val();
@@ -111,8 +126,17 @@ App.FirebaseAdapter =  DS.Adapter.extend({
       // schedule in next loop so that if this was called because
       // of createRecord we preform an update rather than a creating
       // a duplicate.
+
       Em.run.next(null, function(){
-        store.push(type, record);
+        out = serializer.extractSingle(store, type, record, record.id, 'find');
+        
+        try{
+          store.push(type, out);          
+        }catch(e){
+          
+          debugger
+        }
+
       });        
 
 
@@ -131,15 +155,22 @@ App.FirebaseAdapter =  DS.Adapter.extend({
       var record = snapshot.val();
       record.id = snapshot.name();
       record.url = snapshot.ref().toString();
-      store.push(type, record);
+      out = serializer.extractSingle(store, type, record, record.id, 'find');
+
+      try{
+        store.push(type, out);        
+      }catch(e){
+        debugger
+      }
+
 
     });
 
     
-    return this.emptyPromise();
+    return this.emptyPromise([]);
 
   }
-  
+
 });
 
 

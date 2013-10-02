@@ -1,6 +1,9 @@
 App.Insight = DS.Model.extend({
   content: DS.attr('string'),
   url: DS.attr('string'),
+  name: DS.attr('string'),
+  description: DS.attr('string'),
+  
   query:  DS.belongsTo('query'),
 
   spec: function(){
@@ -19,14 +22,6 @@ App.Insight = DS.Model.extend({
     return q;
   }.property('spec'),
 
- 
-  name: function(){
-    return this.get('spec.name');
-  }.property('spec'),
-
-  description: function(){
-    return this.get('spec.description') || '';
-  }.property('spec'),
 
 
   isTemp: function(){

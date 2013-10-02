@@ -1,6 +1,6 @@
 <h1>
-    {{name}} 
-    {{
+  {{input value=name}}
+  {{
     info-hotspot
     title="Insights"
     body="
@@ -19,8 +19,8 @@
 
 
 <ul class="tabs">
-  {{#linkTo "insight.chart" tagName="li" }}Design{{/linkTo}}
-  {{#linkTo "insight.describe" tagName="li" }}Describe{{/linkTo}} 
+  {{#linkTo chart tagName="li" }}Design{{/linkTo}}
+  {{#linkTo describe tagName="li" }}Describe{{/linkTo}} 
 </ul>
 
 <div class="insight">

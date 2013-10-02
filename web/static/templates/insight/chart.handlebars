@@ -1,17 +1,22 @@
+
 <ul >
   <li class="editor">
 
     <div class="data-source">
       {{#linkTo 'query' query}}{{statement}}{{/linkTo}}
     </div>
-    
+
     {{ view App.EditorView contentBinding="model.content" }}
     
     <div class="btn-group">
-      <a class="btn" {{action save}}><i class="icon-hdd"></i>  Save</a>
-      <a class="btn" {{action publish}}><i class="icon-bullhorn"></i> Publish</a>
+    {{#each modelActions}}
+      <button class="btn" {{action dispatch action}}>
+        <i {{bind-attr class="icon"}}></i>  {{title}}
+      </button>
+    {{/each}}
     </div>
 
+ 
     {{#linkTo 'query' query class="btn"}}<i class="icon-th"></i> Data{{/linkTo}}
     <span class="pull-right">{{execution_time}}</span>
   </li>

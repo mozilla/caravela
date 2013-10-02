@@ -20,9 +20,6 @@ App.QueryController = Ember.Table.TableController.extend({
 
   visualizeDisabled: Em.computed.none('insight'),
 
-
-  //bodyContent: Em.computed.alias("records"),
-
   bodyContent:  function(){
     return Ember.Table.RowArrayProxy.create({
       tableRowClass: Ember.Table.Row,

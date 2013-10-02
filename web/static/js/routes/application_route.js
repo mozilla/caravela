@@ -18,6 +18,7 @@ App.ApplicationRoute = Em.Route.extend({
     
     logout: function(){
       this.controllerFor('user').logout();
+      this.transitionTo('index');
     }
 
   }
