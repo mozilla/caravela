@@ -129,14 +129,7 @@ App.FirebaseAdapter =  DS.Adapter.extend({
 
       Em.run.next(null, function(){
         out = serializer.extractSingle(store, type, record, record.id, 'find');
-        
-        try{
-          store.push(type, out);          
-        }catch(e){
-          
-          debugger
-        }
-
+        store.push(type, out);          
       });        
 
 
@@ -157,12 +150,7 @@ App.FirebaseAdapter =  DS.Adapter.extend({
       record.url = snapshot.ref().toString();
       out = serializer.extractSingle(store, type, record, record.id, 'find');
 
-      try{
-        store.push(type, out);        
-      }catch(e){
-        debugger
-      }
-
+      store.push(type, out);        
 
     });
 
