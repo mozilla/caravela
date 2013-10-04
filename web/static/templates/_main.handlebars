@@ -37,13 +37,16 @@
   <ul>
     <li><h5>
       Your Queries 
-      {{#linkTo 'queries.new' title="Add Query" class="pull-right"}}
+      {{#linkTo 'queries.new' title="Add Query" class="action pull-right"}}
         <i class="icon-plus"></i>
       {{/linkTo}}
     </h5></li>
     {{#each queries}}
       <li>
         {{#linkTo 'query' this}}{{#if isDirty}}*{{/if}} {{name}}{{/linkTo}}
+        <a  title="Remove Query" class="action pull-right" {{action remove this}}>
+          <i class="icon-minus"></i>
+        </a>
       </li>
     {{/each}}
 

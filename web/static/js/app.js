@@ -44,7 +44,7 @@ App.FirebaseAdapter =  DS.Adapter.extend({
   emptyPromise: function(result){
     // resolve immediatly we'll update the store
     // via push as the records come in
-    result = result || {};
+    
     return new Ember.RSVP.Promise(function(resolve, reject) {
       resolve(result);
     });
@@ -76,6 +76,10 @@ App.FirebaseAdapter =  DS.Adapter.extend({
 
     });
 
+  },
+
+  deleteRecord: function(store, type, record){
+    return this.emptyPromise();
   },
 
   updateRecord: function(store, type, record){
@@ -139,6 +143,7 @@ App.FirebaseAdapter =  DS.Adapter.extend({
     ref.on('child_removed', function(snapshot){
 
       var id = snapshot.name();
+      console.log('removing', type,id)
       var record = store.recordForId(type, id);
       record.unloadRecord();
     });

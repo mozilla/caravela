@@ -186,6 +186,23 @@ ul.tabs
     i
       font-size: 16px
 
+    .action
+      i
+        display: none
+        font-size: 80%
+        line-height: 1.5em
+        width: 1.5em
+        margin-right: 40px
+        padding-left: 1px
+        padding-top: 1px
+        +circle-border($sidebar-group-header)
+        vertical-align: middle
+
+
+    &:hover .action i
+      display: inherit
+
+
     h5
       padding-top: 20px
       color: $sidebar-group-header
@@ -193,21 +210,6 @@ ul.tabs
 
       a
         color: $sidebar-group-header
-      i
-        display: none
-        font-size: 80%
-        line-height: 1.5em
-        width: 1.5em
-        margin-right: 20px
-        padding-left: 1px
-        padding-top: 1px
-        +circle-border($sidebar-group-header)
-        vertical-align: middle
-
-
-      &:hover i
-        display: inherit
-
 
 
     a.active

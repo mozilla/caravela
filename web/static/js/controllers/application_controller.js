@@ -6,6 +6,13 @@ App.ApplicationController = Ember.ArrayController.extend({
 
   user: function(){
     return this.get('controllers.user');
-  }.property()
+  }.property(),
+
+  actions:{
+    remove: function(model){
+      model.deleteRecord();
+      model.save();
+    }
+  }
 
 });
