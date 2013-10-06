@@ -130,8 +130,12 @@ App.QueryController = Ember.Table.TableController.extend({
       this.get('model').save();
     },
     visualize: function(){
-      this.transitionToRoute('insight.chart', this.get('insight'));
 
+      var infos = App.Router.router.currentHandlerInfos;
+      var last =  infos[infos.length-1];
+      if (last.name == 'query.insight'){
+        this.transitionToRoute('insight.chart',last.context);
+      }
     }
   }
 
@@ -161,7 +165,16 @@ App.QueriesNewController = App.QueryController.extend({
       'query',
       this.getProperties('name', 'statement')
     );
-    return query.save();
+
+    var saved = query.save()
+
+    saved.then(function(){
+      this.get('store').createRecord(
+        'myQuery',
+        {'query': query}
+      ).save()
+    }.bind(this));
+    return saved;
   },
 
   actions:{
@@ -170,6 +183,7 @@ App.QueriesNewController = App.QueryController.extend({
     },
 
     visualize: function(){
+
       var store = this.get('store'),
         self = this,
         statement =  this.get('statement');
@@ -178,15 +192,17 @@ App.QueriesNewController = App.QueryController.extend({
       var temp  = store.find('insight','temp');
 
       Ember.RSVP.all([query, temp]).then(function(records){
+
         query = records[0],
         temp = records[1];
 
         var spec = temp.get('spec') || {};
-        spec.query = statement;
-        spec.name = '%@ Visual'.fmt(query.get('name'));
+        //spec.query = statement;
+        var name = '%@ Visual'.fmt(query.get('name'));
+        //spec.name = '%@ Visual'.fmt(query.get('name'));
 
         var insight =  store.createRecord('insight', {
-          name: spec.name, 
+          name: name, 
           content:JSON.stringify(spec, null, "  "),
           query:query
         });
