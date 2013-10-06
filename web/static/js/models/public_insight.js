@@ -11,7 +11,7 @@ App.PublicInsight = DS.Model.extend({
   updated_at: DS.attr('number'),
   url: DS.attr('string'),
 
-  query:  DS.belongsTo('publicQuery'),
+  query:  DS.belongsTo('query'),
 
   spec: function(){
     var spec;
@@ -36,7 +36,7 @@ App.PublicInsightAdapter = App.FirebaseAdapter.extend({
 });
 
 
-
+/*
 App.PublicInsightSerializer = DS.JSONSerializer.extend({
   
   extractSingle: function(store, type, payload, id, requestType) {
@@ -52,4 +52,4 @@ App.PublicInsightSerializer = DS.JSONSerializer.extend({
     return this._super(store, type, payload, id, requestType);    
   }
 });
-
+*/

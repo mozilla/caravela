@@ -18,7 +18,10 @@ App.ApplicationRoute = Em.Route.extend({
     
     logout: function(){
       this.controllerFor('user').logout();
-      this.transitionTo('index');
+      this.transitionTo('index').then(function(){
+        //clear out entire state
+        App.reset();        
+      });
     }
 
   }

@@ -23,8 +23,9 @@ App.InsightChartController = Em.ObjectController.extend({
 
       insight['thumbNail'] = this.get('thumbNail');
       
-      var query = this.get('model.query').serialize();
-      delete query.insight;
+      var query = this.get('model.query.id');
+      //var query = this.get('model.query').serialize();
+      //delete query.insight;
 
 
       insight['query'] = query;

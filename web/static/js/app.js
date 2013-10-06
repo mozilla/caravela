@@ -16,7 +16,9 @@ App.Router.map(function(){
 
   this.resource('queries', { path: '/query' }, function(){
     this.route('new');
-    this.resource('query', { path: ':query_id' });
+    this.resource('query', { path: ':query_id' }, function(){
+      this.route('insight', { path: ':insight_id' });
+    });
   });
 
   

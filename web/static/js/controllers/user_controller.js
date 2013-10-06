@@ -129,7 +129,7 @@ App.UserController = Em.ObjectController.extend({
   }.property('content'),
 
   queries: function(key, value){
-    return this.get('store').find('query');
+    return this.get('store').find('myQuery');
   }.property('content')
 
 

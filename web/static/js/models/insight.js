@@ -5,6 +5,7 @@ App.Insight = DS.Model.extend({
   description: DS.attr('string'),
   
   query:  DS.belongsTo('query'),
+  statement: Em.computed.alias('query.statement'),
 
   spec: function(){
     var spec;
@@ -17,11 +18,12 @@ App.Insight = DS.Model.extend({
     return spec;
   }.property('content'),
 
+/*
   statement: function(){
     var q = this.get('spec.query') || '';
     return q;
   }.property('spec'),
-
+*/
 
 
   isTemp: function(){

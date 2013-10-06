@@ -43,7 +43,8 @@
     </h5></li>
     {{#each queries}}
       <li>
-        {{#linkTo 'query' this}}{{#if isDirty}}*{{/if}} {{name}}{{/linkTo}}
+
+        {{#linkTo 'query' query}}{{#if isDirty}}*{{/if}} {{query.name}}{{/linkTo}}
         <a  title="Remove Query" class="action pull-right" {{action remove this}}>
           <i class="icon-minus"></i>
         </a>

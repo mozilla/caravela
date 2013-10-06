@@ -17,25 +17,15 @@ App.PublicChartController = Em.ObjectController.extend({
     },
     fork: function(){
       
-      var i = this.get('model').serialize(),
-          q = this.get('model.query').serialize();
+      var i = this.get('model').serialize();
+      i.query = this.get('model.query');
 
-      delete i.query;
-      delete q.insight;
+      var insight = this.get('store').createRecord('insight', i);
 
-      var insight = this.get('store').createRecord('insight', i),
-          query = this.get('store').createRecord('query',q);
+      insight.save().then(function(){
+        this.transitionToRoute('insight.chart', insight);
+      }.bind(this));
 
-      var self = this;
-
-      query.save().then(function(){
-        insight.set('query', query);
-        insight.save().then(function(){
-          query.set('insight', insight);
-          query.save();
-          self.transitionToRoute('insight.chart', insight);
-        });
-      });
 
     }
 
