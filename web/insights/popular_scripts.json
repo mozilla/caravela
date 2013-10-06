@@ -1,7 +1,4 @@
 {
-  "query": "select * from scripts limit 10",
- 
-  "name": "Popular Scripts",
   "width": 480,
   "height": 200,
   "padding": {"top": 10, "left": 300, "bottom": 20, "right": 10},
