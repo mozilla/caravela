@@ -135,11 +135,22 @@ App.QueryController = Ember.Table.TableController.extend({
       this.get('model').save();
     },
     visualize: function(){
-
+      // Use the model from the current
+      // subroute
       var infos = App.Router.router.currentHandlerInfos;
       var last =  infos[infos.length-1];
       if (last.name == 'query.insight'){
-        this.transitionToRoute('insight.chart',last.context);
+        var insight = last.context;
+
+        var route;
+        if(insight.constructor == App.PublicInsight){
+          route = "public.chart";
+        }else{
+          route = 'insight.chart';
+        }
+
+
+        this.transitionToRoute(route ,insight);
       }
     }
   }
