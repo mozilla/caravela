@@ -5,17 +5,4 @@ App.Query = DS.Model.extend({
 });
 
 
-
-App.QueryAdapter = App.FirebaseAdapter.extend({
-  /*
-  refForType: function(type){
-    var user_id = App.__container__.lookup('controller:user').get('id');
-    return new Firebase(this.get('baseRef')).child(
-      "users/%@/%@".fmt(
-        user_id,
-        Em.String.pluralize(type.typeKey)
-      ) 
-    );
-  }
-  */
-});
+App.QueryAdapter = App.FirebaseAdapter.extend({});

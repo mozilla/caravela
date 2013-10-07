@@ -69,6 +69,13 @@ App.QueryController = Ember.Table.TableController.extend({
      
   }.property("statement"),
 
+  willDestroy: function(){
+    if(this.timer){
+      clearInterval(this.timer);
+    }
+
+  },
+
   execute_stmt: function(stmt){
     var self = this;
     var start = new Date().getTime();
@@ -79,11 +86,10 @@ App.QueryController = Ember.Table.TableController.extend({
     }
     self.set('execution_time', '0.0s');
 
-
     var timer;
     timer = self.timer = setInterval(function(){
       var elapsed = (new Date().getTime() - start) / 1000;
-       self.set('execution_time', elapsed.toFixed(1) + 's');
+      self.set('execution_time', elapsed.toFixed(1) + 's');
     }, 50);
     
     var array = [];
@@ -101,15 +107,14 @@ App.QueryController = Ember.Table.TableController.extend({
       
       json.records.forEach(function(record,i){
         var o = _.object(schema, record);
-
         records.addObject(Em.Object.create(o));
-        //records.addObject(o)        
       });
 
     }).fail(function(){
       alert('failure');
     }).always(function(){
       clearInterval(timer);
+      self.timer = null;
     });
 
   },

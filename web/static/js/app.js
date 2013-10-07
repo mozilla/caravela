@@ -41,6 +41,9 @@ App.ObjectTransform = DS.Transform.extend({
 
 App.FirebaseAdapter =  DS.Adapter.extend({
   baseRef: "https://caravela.firebaseio.com/",
+  willDestroy: function(){
+    new Firebase(this.get('baseRef')).off();
+  },
 
 
   emptyPromise: function(result){
@@ -112,8 +115,13 @@ App.FirebaseAdapter =  DS.Adapter.extend({
     return new Ember.RSVP.Promise(function(resolve, reject) {
       var ref = this.refForType(type);
       ref.child(id).once('value', function(snapshot){
-        var record = snapshot.val() || {id:id};
-        resolve(record);
+        var record = snapshot.val();// || {id:id};
+        if(record){
+          resolve(record);          
+        }else{
+          reject('%@ not found'.fmt(id));
+        }
+
       })
 
     }.bind(this))
