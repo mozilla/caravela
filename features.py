@@ -59,7 +59,7 @@ def tags(doc):
     counts = Counter((
       t.name 
       for t in dom.descendants 
-      if hasattr(t,'name') 
+      if hasattr(t,'name') and t.name 
     ))
 
     yield "tags", [dict(name=k, count=v) for k,v in counts.iteritems()]
