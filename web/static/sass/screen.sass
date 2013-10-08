@@ -56,10 +56,14 @@ body
   background-color: $main-background
   font-family: $font-regular
   font-size: 16px
+  height: 100%
 
 em
   font-weight: bold
 
+
+body > div.ember-view
+  height: 100%
 
 .popover
   .popover-title
@@ -440,12 +444,9 @@ ul.tabs
 
 
 .sign-in, .welcome
-  position: absolute
-  top: 0px
-  bottom: 0px
-  right: 0px
-  left: 0px
-
+  margin-left: auto
+  margin-right: auto
+  height: 100%
   background: $sidebar-background
   color: $sidebar-foreground
   font-weight: 300
