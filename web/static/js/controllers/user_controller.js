@@ -4,6 +4,8 @@ App.UserController = Em.ObjectController.extend({
   userRef: null,
   baseRef: new Firebase('https://caravela.firebaseio.com/'),
 
+  afterLoginTransition: null,
+
   record_state: "Save",
 
   init: function(){
@@ -68,11 +70,19 @@ App.UserController = Em.ObjectController.extend({
               var user = snapshot.val();
               user.id = snapshot.name();
               self.set('content', user);
+              
+              var transition = self.get('afterLoginTransition');
+              if(transition){
+                self.set('afterLoginTransition', null);
+                transition.retry();
+              }
+
             });
             
           }
         );
         
+
 
       }
     }
