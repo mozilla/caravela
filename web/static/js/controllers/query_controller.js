@@ -163,12 +163,14 @@ App.QueryController = Ember.Table.TableController.extend({
    inherits from QueryController 
 */
 App.QueriesNewController = App.QueryController.extend({
-  needs: ['insightTable'],
+  needs: ['insightTable', 'user'],
   name: null,
   statement: "",
 
   schema: Em.ArrayProxy.create({content:[]}),
   records: Em.ArrayProxy.create({content:[]}),
+
+  ownerId: Em.computed.alias('controllers.user.content.publicId'),
 
   saveDisabled:  function(){
     return  !Boolean(this.get('name') && this.get('statement'));
@@ -177,9 +179,13 @@ App.QueriesNewController = App.QueryController.extend({
   visualizeDisabled: Em.computed.alias('saveDisabled'),
 
   newQuery:function(){
+
+    var props = this.getProperties('name', 'statement');
+    props['ownerId'] = this.get('ownerId');
+
     var query = this.get('store').createRecord(
       'query',
-      this.getProperties('name', 'statement')
+      props
     );
 
     var saved = query.save()

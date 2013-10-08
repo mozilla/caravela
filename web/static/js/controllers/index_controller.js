@@ -7,8 +7,7 @@ App.IndexController = Ember.ArrayController.extend({
   actions: {
     showInsight: function(pub_insight){
       var store = this.get('store');
-
-      if(this.get('user.id') == pub_insight.get('user_id')){
+      if(this.get('user.publicId') == pub_insight.get('ownerId')){
         this.transitionToRoute(
           'insight.chart', 
           store.find('insight',pub_insight.id)

@@ -23,7 +23,7 @@ App.UserController = Em.ObjectController.extend({
   publishInsight: function(insight){
     insight['avatar_url'] = this.get('content.avatar_url');
     insight['nickname'] = this.get('content.nickname');
-    insight['user_id'] = this.get('content.id');
+    insight['ownerId'] = this.get('content.publicId');
     insight['updated_at'] = Firebase.ServerValue.TIMESTAMP;
 
     this.get('baseRef').child('feed/'+insight.id).setWithPriority(
@@ -42,7 +42,7 @@ App.UserController = Em.ObjectController.extend({
       }else{
 
         var baseRef = this.get('baseRef'), 
-            userRef = baseRef.child('users/'+usr.md5_hash),
+            userRef = baseRef.child('users/'+usr.id),
             self=this;
 
         this.set('userRef', userRef);
@@ -52,8 +52,9 @@ App.UserController = Em.ObjectController.extend({
               return {
                 'email': usr.email,
                 'nickname': null,
+                'publicId': usr.md5_hash,
                 'avatar_url': "https://www.gravatar.com/avatar/%@".fmt(
-                  usr.hash
+                  usr.md5_hash
                 ),
                 'status': 'pending',
                 'created_at':  Firebase.ServerValue.TIMESTAMP,

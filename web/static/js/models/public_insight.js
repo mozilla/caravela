@@ -4,7 +4,7 @@ App.PublicInsight = DS.Model.extend({
   thumbNail: DS.attr('string'),
   content: DS.attr('string'),
 
-  user_id: DS.attr('string'),
+  ownerId: DS.attr('string'),
   nickname: DS.attr('string'),
   avatar_url: DS.attr('string'),
  
