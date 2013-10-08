@@ -69,13 +69,11 @@ App.FirebaseAdapter =  DS.Adapter.extend({
 
     var ref = this.refForType(type);   
     return new Ember.RSVP.Promise(function(resolve) {
-
       var childRef = ref.push(
         data
       );
       data.id = childRef.name();
       data.url = childRef.toString();
-      console.log("adding", type.typeKey, data)
       resolve(data);
 
 
@@ -115,8 +113,10 @@ App.FirebaseAdapter =  DS.Adapter.extend({
     return new Ember.RSVP.Promise(function(resolve, reject) {
       var ref = this.refForType(type);
       ref.child(id).once('value', function(snapshot){
-        var record = snapshot.val();// || {id:id};
+
+        var record = snapshot.val();
         if(record){
+          record.id = id;
           resolve(record);          
         }else{
           reject('%@ not found'.fmt(id));
@@ -151,9 +151,7 @@ App.FirebaseAdapter =  DS.Adapter.extend({
 
     
     ref.on('child_removed', function(snapshot){
-
       var id = snapshot.name();
-      console.log('removing', type,id)
       var record = store.recordForId(type, id);
       record.unloadRecord();
     });
