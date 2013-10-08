@@ -18,7 +18,7 @@ App.QueryController = Ember.Table.TableController.extend({
 
   saveDisabled: Ember.computed.not('isDirty'),
 
-  visualizeDisabled: Em.computed.none('insight'),
+  visualizeDisabled: false,
 
   bodyContent:  function(){
     return Ember.Table.RowArrayProxy.create({
@@ -119,6 +119,28 @@ App.QueryController = Ember.Table.TableController.extend({
 
   },
 
+  newVisual: function(){
+    var store = this.get('store'),
+    self = this;
+
+    var temp  = store.find('insight','temp').then(function(temp){
+      var spec = temp.get('spec') || {};
+      var name = '%@ Visual'.fmt(self.get('name'));
+      var insight =  store.createRecord('insight', {
+        name: name, 
+        content:JSON.stringify(spec, null, "  "),
+        query:self.get('model')
+      });
+
+      insight.save();
+      self.transitionToRoute('insight.chart', insight);
+
+    });
+
+
+  },
+
+
   update: _.debounce(function(){
     var query = this.get('statement');
     if(query){
@@ -139,7 +161,10 @@ App.QueryController = Ember.Table.TableController.extend({
       // subroute
       var infos = App.Router.router.currentHandlerInfos;
       var last =  infos[infos.length-1];
-      if (last.name == 'query.insight'){
+
+      if(last.name == "query.index"){
+        this.newVisual();
+      }else if (last.name == 'query.insight'){
         var insight = last.context;
 
         var route;
@@ -219,9 +244,9 @@ App.QueriesNewController = App.QueryController.extend({
         temp = records[1];
 
         var spec = temp.get('spec') || {};
-        //spec.query = statement;
+
         var name = '%@ Visual'.fmt(query.get('name'));
-        //spec.name = '%@ Visual'.fmt(query.get('name'));
+
 
         var insight =  store.createRecord('insight', {
           name: name, 
