@@ -99,11 +99,6 @@ class TestDBWrapper(TestCase):
 
     tasks.execute("col1")
 
-  def test_relations(self):
-    assert_sequence_equal(
-      tasks.relations(),
-      ['docs', 'top_sites']
-    )
 
 
 
